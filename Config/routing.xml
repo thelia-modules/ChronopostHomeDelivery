@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="chronopost.home.delivery.config.save" path="/admin/module/ChronopostHomeDelivery/config" methods="post">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliveryBackOfficeController::saveAction</default>
+    </route>
+
+    <route id="chronopost.home.delivery.configShipper.save" path="/admin/module/ChronopostHomeDelivery/configShipper" methods="post">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliveryBackOfficeController::saveActionShipper</default>
+    </route>
+
+    <route id="chronopost.home.delivery.save.label" path="/admin/module/ChronopostHomeDelivery/saveLabel">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliveryBackOfficeController::saveLabel</default>
+    </route>
+
+
+    <route id="chronopost.home.delivery.toggle.freeshipping" path="/admin/module/chronopost-home-delivery/freeshipping" methods="post">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliveryFreeShippingController::toggleFreeShippingActivation</default>
+    </route>
+
+    <route id="chronopost.home.delivery.edit.freeshippingfrom" path="/admin/module/chronopost-home-delivery/freeshipping_from" methods="post">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliveryFreeShippingController::setFreeShippingFrom</default>
+    </route>
+
+    <route id="chronopost.home.delivery.edit.areafreeshipping" path="/admin/module/chronopost-home-delivery/area_freeshipping" methods="post">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliveryFreeShippingController::setAreaFreeShipping</default>
+    </route>
+
+
+    <route id="chronopost.home.delivery.add.price" path="/admin/module/chronopost-home-delivery/slice/save" methods="post">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliverySliceController::saveSliceAction</default>
+    </route>
+    <route id="chronopost.home.delivery.update.price" path="/admin/module/chronopost-home-delivery/slice/delete" methods="post">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliverySliceController::deleteSliceAction</default>
+    </route>
+
+    <route id="chronopost.home.delivery.get.coordinates" path="/admin/module/chronopost-home-delivery/coordinates">
+        <default key="_controller">ChronopostHomeDelivery\Controller\ChronopostHomeDeliveryRelayController::findByAddress</default>
+    </route>
+
+</routes>

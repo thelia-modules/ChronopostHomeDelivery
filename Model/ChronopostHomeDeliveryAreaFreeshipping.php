@@ -1,0 +1,10 @@
+<?php
+
+namespace ChronopostHomeDelivery\Model;
+
+use ChronopostHomeDelivery\Model\Base\ChronopostHomeDeliveryAreaFreeshipping as BaseChronopostHomeDeliveryAreaFreeshipping;
+
+class ChronopostHomeDeliveryAreaFreeshipping extends BaseChronopostHomeDeliveryAreaFreeshipping
+{
+
+}
