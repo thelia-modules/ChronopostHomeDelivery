@@ -7,5 +7,6 @@
   },
   "extra": {
     "installer-name": "ChronopostHomeDelivery"
-  }
+  },
+  "description": "Chronopost delivery module for home deliveries."
 }
