@@ -40,7 +40,7 @@ After activating the delivery types you wih to use, new tabs will appear. With t
 change the shipping prices according to the delivery type and the area, and/or activate free shipping for a given price and/or given area, or just
 activate it no matter the are and cart amount.
 
-You can then generate and download labels from the Chronopost Label page accessible from the toolbar on the left of the BackOffice, or directly from the order page.
+If you also have the ChronopostLabel module, you can then generate and download labels from the Chronopost Label page accessible from the toolbar on the left of the BackOffice, or directly from the order page.
 
 
 ## Loop
