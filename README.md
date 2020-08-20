@@ -45,7 +45,57 @@ If you also have the ChronopostLabel module, you can then generate and download 
 
 ## Loop
 
-To be written
+###[chronopost.home.delivery]
+
+### Input arguments
+
+|Argument |Description |
+|---      |--- |
+|**area_id** | **Mandatory** ID of the area from which you want to know the prices. |
+|**delivery_mode_id** | **Mandatory** ID of the delivery mode of which you want to know the prices. |
+
+### Output arguments
+
+|Variable   |Description |
+|---        |--- |
+|$SLICE_ID    | ID of the price slice |
+|$MAX_WEIGHT    | Max weight for this slice price |
+|$MAX_PRICE    | Max untaxed price of a cart for this price |
+|$PRICE    | Price for this slice |
+|$FRANCO    | Price of the Franco for this slice |
+
+###[chronopost.home.delivery.delivery.mode]
+
+### Input arguments
+
+None
+
+### Output arguments
+
+|Variable   |Description |
+|---        |--- |
+|$ID    | The delivery mode ID in the table |
+|$TITLE    | The delivery mode title (ex : Fresh13) |
+|$CODE    | The delivery mode code (ex : 2R) |
+|$FREESHIPPING_ACTIVE    | 0 or 1 depending on whether the total freeshipping is active or not |
+|$FREESHIPPING_FROM    | Cart price needed for freeshipping |
+
+###[chronopost.home.delivery.area.freeshipping]
+
+### Input arguments
+
+|Argument |Description |
+|---      |--- |
+|**area_id** | ID of the area from which you want to know the free shipping minimum amount needed. |
+|**delivery_mode_id** | ID of the delivery mode of which you want to know the free shipping minimum amount needed. |
+
+### Output arguments
+
+|Variable   |Description |
+|---        |--- |
+|$AREA_ID    | ID of the area |
+|$DELIVERY_MODE_ID    | ID of the delivery mode |
+|$CART_AMOUNT    | Cart amount needed for free shipping in this area and for this delivery mode |
 
 ##Integration
 

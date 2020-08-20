@@ -5,10 +5,9 @@
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
     <loops>
+        <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryLoop" name="chronopost.home.delivery" />
         <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryDeliveryMode" name="chronopost.home.delivery.delivery.mode" />
-        <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryLoop" name="chronopost" />
         <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryAreaFreeshipping" name="chronopost.home.delivery.area.freeshipping" />
-        <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryExportLabelLoop" name="chronopost.home.delivery.export.label" />
     </loops>
 
     <forms>
@@ -30,6 +29,11 @@
         </service>
         <service id="api.chronopost.home.delivery" class="ChronopostHomeDelivery\EventListeners\APIListener" scope="request">
             <argument type="service" id="service_container"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+        <service id="chronopost.home.delivery.notification.mail" class="ChronopostHomeDelivery\EventListeners\ShippingNotificationSender">
+            <argument type="service" id="thelia.parser" />
+            <argument type="service" id="mailer"/>
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>
