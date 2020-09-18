@@ -308,10 +308,6 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
             }
         }
 
-        if (null === $minPostage) {
-            throw new DeliveryException("Chronopost delivery unavailable for your cart weight or delivery country");
-        }
-
         return $minPostage;
     }
 
@@ -384,8 +380,8 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
             $postage = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount, $deliveryArray[$y]);
 
             while (isset($deliveryArray[$y]) && !empty($deliveryArray[$y]) && null !== $deliveryArray[$y]) {
-                if ($postage > $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount, $deliveryArray[$y])) {
-                    $postage = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount, $deliveryArray[$y]);
+                if ($postage > ($minPost = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount, $deliveryArray[$y])) && $minPost !== null) {
+                    $postage = $minPost;
                 }
                 $y++;
             }
