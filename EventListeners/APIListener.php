@@ -74,6 +74,11 @@ class APIListener implements EventSubscriberInterface
                 );
 
                 $postageTax = 0; //TODO
+
+                if (null === $postage) {
+                    $isValid = false;
+                }
+
             } catch (\Exception $exception) {
                 $isValid = false;
             }
