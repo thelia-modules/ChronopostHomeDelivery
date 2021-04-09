@@ -58,7 +58,7 @@ class SetDeliveryType implements EventSubscriberInterface
             $orderId = $orderEvent->getOrder()->getId();
 
             foreach (ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES as $name => $code) {
-                if (strtoupper($name) === $request->getSession()->get('ChronopostHomeDeliveryDeliveryType')) {
+                if ($code === $request->getSession()->get('ChronopostHomeDeliveryDeliveryType')) {
                     $chronopostOrder
                         ->setDeliveryType($name)
                         ->setDeliveryCode($code)
@@ -84,7 +84,7 @@ class SetDeliveryType implements EventSubscriberInterface
             $request = $this->getRequest();
 
             $request->getSession()->set('ChronopostAddressId', $orderEvent->getDeliveryAddress());
-            $request->getSession()->set('ChronopostHomeDeliveryDeliveryType', $request->get('chronopost-home-delivery-delivery-mode'));
+            $request->getSession()->set('ChronopostHomeDeliveryDeliveryType', $request->get('deliveryModuleOptionCode'));
         }
 
         return ;
