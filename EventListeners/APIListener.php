@@ -3,12 +3,12 @@
 
 namespace ChronopostHomeDelivery\EventListeners;
 
-
 use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
 use OpenApi\Events\DeliveryModuleOptionEvent;
 use OpenApi\Events\OpenApiEvents;
 use OpenApi\Model\Api\DeliveryModuleOption;
+use OpenApi\Service\ImageService;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -22,9 +22,14 @@ class APIListener implements EventSubscriberInterface
 {
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    /** @var ImageService  */
+    protected $imageService;
+
+
+    public function __construct(ContainerInterface $container, ImageService $imageService)
     {
         $this->container = $container;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -78,7 +83,6 @@ class APIListener implements EventSubscriberInterface
                 if (null === $postage) {
                     $isValid = false;
                 }
-
             } catch (\Exception $exception) {
                 $isValid = false;
             }
@@ -86,13 +90,24 @@ class APIListener implements EventSubscriberInterface
             $minimumDeliveryDate = ''; // TODO (with a const array code => timeToDeliver to calculate delivery date from day of order)
             $maximumDeliveryDate = ''; // TODO (with a const array code => timeToDeliver to calculate delivery date from day of order)
 
+            $image = null;
+            $imageQuery = ModuleImageQuery::create()->findByModuleId($deliveryModuleOptionEvent->getModule()->getId())->getFirst();
+    
+            if (null !== $imageQuery) {
+                try {
+                    $image = $this->imageService->getImageUrl($imageQuery, 'module');
+                } catch (\Exception $e) {
+                    Tlog::getInstance()->addError($e);
+                }
+            }
+
             /** @var DeliveryModuleOption $deliveryModuleOption */
             $deliveryModuleOption = ($this->container->get('open_api.model.factory'))->buildModel('DeliveryModuleOption');
             $deliveryModuleOption
                 ->setCode($code)
                 ->setValid($isValid)
                 ->setTitle($name)
-                ->setImage('')
+                ->setImage($image)
                 ->setMinimumDeliveryDate($minimumDeliveryDate)
                 ->setMaximumDeliveryDate($maximumDeliveryDate)
                 ->setPostage($postage)

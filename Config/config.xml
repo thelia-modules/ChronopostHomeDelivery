@@ -29,6 +29,7 @@
         </service>
         <service id="api.chronopost.home.delivery" class="ChronopostHomeDelivery\EventListeners\APIListener" scope="request">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="open_api.image.service"/>
             <tag name="kernel.event_subscriber"/>
         </service>
         <service id="chronopost.home.delivery.notification.mail" class="ChronopostHomeDelivery\EventListeners\ShippingNotificationSender">
