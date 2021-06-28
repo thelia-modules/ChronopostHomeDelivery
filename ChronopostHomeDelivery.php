@@ -180,7 +180,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
      */
     public function getDeliveryType($request)
     {
-        $deliveryMode = $request->get('chronopost-home-delivery-delivery-mode');
+        $deliveryMode = $request->get('deliveryModuleOptionCode');
 
         $deliveryCodes = array_change_key_case(ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES, CASE_LOWER);
 
