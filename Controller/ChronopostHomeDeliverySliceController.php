@@ -7,17 +7,23 @@ use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPrice;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPriceQuery;
 use Propel\Runtime\Map\TableMap;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
+use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/admin/module/chronopost-home-delivery/slice", name="chronopost-home-delivery_slice")
+ */
 class ChronopostHomeDeliverySliceController extends BaseAdminController
 {
     /**
      * Save/Create a price slice in the delivery type being edited
      *
      * @return mixed|null|\Thelia\Core\HttpFoundation\Response
+     * @Route("/save", name="_save", methods="POST")
      */
-    public function saveSliceAction()
+    public function saveSliceAction(RequestStack $requestStack)
     {
         $response = $this->checkAuth([], ['chronopost'], AccessManager::UPDATE);
 
@@ -37,7 +43,7 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
         $response = null;
 
         try {
-            $requestData = $this->getRequest()->request;
+            $requestData = $requestStack->getCurrentRequest()->request;
 
             if (0 !== $id = (int)($requestData->get('id', 0))) {
                 $slice = ChronopostHomeDeliveryPriceQuery::create()->findPk($id);
@@ -163,8 +169,9 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
      * Delete a price slice in the delivery type being edited
      *
      * @return mixed|null|\Thelia\Core\HttpFoundation\Response
+     * @Route("/delete", name="_delete", methods="POST")
      */
-    public function deleteSliceAction()
+    public function deleteSliceAction(RequestStack $requestStack)
     {
         $response = $this->checkAuth([], ['chronopost'], AccessManager::DELETE);
 
@@ -183,7 +190,7 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
         $response = null;
 
         try {
-            $requestData = $this->getRequest()->request;
+            $requestData = $requestStack->getCurrentRequest()->request;
 
             if (0 !== $id = (int)($requestData->get('id', 0))) {
                 $slice = ChronopostHomeDeliveryPriceQuery::create()->findPk($id);

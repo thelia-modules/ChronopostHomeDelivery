@@ -5,11 +5,16 @@ namespace ChronopostHomeDelivery\Controller;
 
 use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
+use ChronopostHomeDelivery\Form\ChronopostHomeDeliveryConfigurationForm;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
+use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/admin/module/ChronopostHomeDelivery/config", name="ChronopostHomeDelivery_config")
+ */
 class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
 {
     /**
@@ -32,6 +37,7 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
      * Save configuration form - Chronopost informations
      *
      * @return mixed|null|\Symfony\Component\HttpFoundation\Response|\Thelia\Core\HttpFoundation\Response
+     * @Route("", name="_save", methods="POST")
      */
     public function saveAction()
     {
@@ -39,7 +45,7 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
             return $response;
         }
 
-        $form = $this->createForm("chronopost_home_delivery_configuration_form");
+        $form = $this->createForm(ChronopostHomeDeliveryConfigurationForm::getName());
 
         try {
             $data = $this->validateForm($form)->getData();

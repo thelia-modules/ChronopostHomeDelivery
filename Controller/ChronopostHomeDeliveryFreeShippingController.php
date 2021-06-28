@@ -8,18 +8,24 @@ use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryAreaFreeshipping;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryAreaFreeshippingQuery;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Model\AreaQuery;
+use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/admin/module/chronopost-home-delivery", name="chronopost-home-delivery")
+ */
 class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
 {
     /**
      * Toggle free shipping for the delivery type being edited.
      *
      * @return mixed|null|Response|static
+     * @Route("/freeshipping", name="_freeshipping", methods="POST")
      */
     public function toggleFreeShippingActivation()
     {
@@ -27,7 +33,7 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
             return $response;
         }
 
-        $form = new ChronopostHomeDeliveryFreeShippingForm($this->getRequest());
+        $form = $this->createForm(ChronopostHomeDeliveryFreeShippingForm::getName());
         $response = null;
 
         try {
@@ -50,14 +56,15 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
     /**
      * @return mixed|Response
      * @throws \Propel\Runtime\Exception\PropelException
+     * @Route("/freeshipping_from", name="_freeshipping_from", methods="POST")
      */
-    public function setFreeShippingFrom()
+    public function setFreeShippingFrom(RequestStack $requestStack)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ChronopostHomeDelivery'), AccessManager::UPDATE)) {
             return $response;
         }
 
-        $data = $this->getRequest()->request;
+        $data = $requestStack->getCurrentRequest()->request;
         $deliveryMode = ChronopostHomeDeliveryDeliveryModeQuery::create()->findOneById($data->get('delivery-mode'));
 
         $price = $data->get("price") === "" ? null : $data->get("price");
@@ -85,17 +92,17 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
      * Set free shipping for a given area of the delivery type being edited.
      *
      * @return mixed|null|Response
+     * @Route("/area_freeshipping", name="_area_freeshipping", methods="POST")
      */
-    public function setAreaFreeShipping()
+    public function setAreaFreeShipping(RequestStack $requestStack)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ChronopostHomeDelivery'), AccessManager::UPDATE)) {
             return $response;
         }
 
-        $data = $this->getRequest()->request;
+        $data = $requestStack->getCurrentRequest()->request;
 
         try {
-            $data = $this->getRequest()->request;
 
             $chronopostAreaId = $data->get('area-id');
             $chronopostDeliveryId = $data->get('delivery-mode');

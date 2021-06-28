@@ -9,8 +9,7 @@ use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
 use OpenApi\Events\DeliveryModuleOptionEvent;
 use OpenApi\Events\OpenApiEvents;
 use OpenApi\Model\Api\DeliveryModuleOption;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use OpenApi\Model\Api\ModelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Translation\Translator;
@@ -20,11 +19,11 @@ use Thelia\Module\Exception\DeliveryException;
 
 class APIListener implements EventSubscriberInterface
 {
-    protected $container;
+    protected $modelFactory;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ModelFactory $modelFactory)
     {
-        $this->container = $container;
+        $this->modelFactory = $modelFactory;
     }
 
     /**
@@ -87,7 +86,7 @@ class APIListener implements EventSubscriberInterface
             $maximumDeliveryDate = ''; // TODO (with a const array code => timeToDeliver to calculate delivery date from day of order)
 
             /** @var DeliveryModuleOption $deliveryModuleOption */
-            $deliveryModuleOption = ($this->container->get('open_api.model.factory'))->buildModel('DeliveryModuleOption');
+            $deliveryModuleOption = $this->modelFactory->buildModel('DeliveryModuleOption');
             $deliveryModuleOption
                 ->setCode($code)
                 ->setValid($isValid)
