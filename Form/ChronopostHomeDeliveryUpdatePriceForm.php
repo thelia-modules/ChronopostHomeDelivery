@@ -5,8 +5,10 @@ namespace ChronopostHomeDelivery\Form;
 
 use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
 use Thelia\Model\AreaQuery;
@@ -16,45 +18,36 @@ class ChronopostHomeDeliveryUpdatePriceForm extends BaseForm
     protected function buildForm()
     {
         $this->formBuilder
-            ->add("area", "integer", array(
+            ->add("area", IntegerType::class, array(
                 "constraints" => array(
                     new Constraints\NotBlank(),
-                    new Constraints\Callback(array(
-                        "methods" => array(
-                            array($this,
-                                "verifyAreaExist")
-                        )
-                    ))
+                    new Constraints\Callback(
+                        array($this, "verifyAreaExist")
+                    )
                 )
             ))
-            ->add("delivery_mode", "integer", array(
+            ->add("delivery_mode", IntegerType::class, array(
                 "constraints" => array(
                     new Constraints\NotBlank(),
-                    new Constraints\Callback(array(
-                        "methods" => array(
-                            array($this,
-                                "verifyDeliveryModeExist")
-                        )
-                    ))
+                    new Constraints\Callback(
+                        array($this, "verifyDeliveryModeExist")
+                    )
                 )
             ))
-            ->add("weight", "number", array(
+            ->add("weight", NumberType::class, array(
                 "constraints" => array(
                     new Constraints\NotBlank(),
                 )
             ))
-            ->add("price", "number", array(
+            ->add("price", NumberType::class, array(
                 "constraints" => array(
                     new Constraints\NotBlank(),
-                    new Constraints\Callback(array(
-                        "methods" => array(
-                            array($this,
-                                "verifyValidPrice")
-                        )
-                    ))
+                    new Constraints\Callback(
+                        array($this, "verifyValidPrice")
+                    )
                 )
             ))
-            ->add("franco", "number", array())
+            ->add("franco", NumberType::class, array())
         ;
     }
 
@@ -81,7 +74,7 @@ class ChronopostHomeDeliveryUpdatePriceForm extends BaseForm
         }
     }
 
-    public function getName()
+    public static function getName()
     {
         return "chronopost_home_delivery_price_create";
     }

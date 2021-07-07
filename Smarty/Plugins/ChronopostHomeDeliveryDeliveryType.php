@@ -7,6 +7,7 @@ use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
 use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Model\CountryArea;
 use Thelia\Model\CountryQuery;
@@ -18,18 +19,18 @@ use TheliaSmarty\Template\SmartyPluginDescriptor;
 
 class ChronopostHomeDeliveryDeliveryType extends AbstractSmartyPlugin
 {
-    protected $request;
+    protected $requestStack;
     protected $dispatcher;
 
     /**
      * ChronopostHomeDeliveryDeliveryType constructor.
      *
-     * @param Request $request
+     * @param RequestStack $requestStack
      * @param EventDispatcherInterface|null $dispatcher
      */
-    public function __construct(Request $request, EventDispatcherInterface $dispatcher = null)
+    public function __construct(RequestStack $requestStack, EventDispatcherInterface $dispatcher = null)
     {
-        $this->request = $request;
+        $this->requestStack = $requestStack;
         $this->dispatcher = $dispatcher;
     }
 
@@ -55,8 +56,9 @@ class ChronopostHomeDeliveryDeliveryType extends AbstractSmartyPlugin
         $deliveryMode = $params["delivery-mode"];
         $country = CountryQuery::create()->findOneById($params["country"]);
 
-        $cartWeight = $this->request->getSession()->getSessionCart($this->dispatcher)->getWeight();
-        $cartAmount = $this->request->getSession()->getSessionCart($this->dispatcher)->getTaxedAmount($country);
+        $request = $this->requestStack->getCurrentRequest();
+        $cartWeight = $request->getSession()->getSessionCart($this->dispatcher)->getWeight();
+        $cartAmount = $request->getSession()->getSessionCart($this->dispatcher)->getTaxedAmount($country);
 
         try {
 
@@ -75,7 +77,7 @@ class ChronopostHomeDeliveryDeliveryType extends AbstractSmartyPlugin
                 $deliveryMode
             );
 
-            $consumedCouponsCodes = $this->request->getSession()->getConsumedCoupons();
+            $consumedCouponsCodes = $request->getSession()->getConsumedCoupons();
 
             foreach ($consumedCouponsCodes as $consumedCouponCode)  {
                 $coupon = CouponQuery::create()
