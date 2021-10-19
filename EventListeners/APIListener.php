@@ -11,6 +11,7 @@ use OpenApi\Events\OpenApiEvents;
 use OpenApi\Model\Api\DeliveryModuleOption;
 use OpenApi\Model\Api\ModelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\CountryArea;
@@ -20,10 +21,12 @@ use Thelia\Module\Exception\DeliveryException;
 class APIListener implements EventSubscriberInterface
 {
     protected $modelFactory;
+    protected $requestStack;
 
-    public function __construct(ModelFactory $modelFactory)
+    public function __construct(ModelFactory $modelFactory = null, RequestStack $requestStack)
     {
         $this->modelFactory = $modelFactory;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -53,23 +56,12 @@ class APIListener implements EventSubscriberInterface
                 $module = new ChronopostHomeDelivery();
                 $country = $deliveryModuleOptionEvent->getCountry();
 
-                if (empty($module->getAllAreasForCountry($country))) {
-                    throw new DeliveryException(Translator::getInstance()->trans("Your delivery country is not covered by Chronopost"));
-                }
-
-                $countryAreas = $country->getCountryAreas();
-                $areasArray = [];
-
-                /** @var CountryArea $countryArea */
-                foreach ($countryAreas as $countryArea) {
-                    $areasArray[] = $countryArea->getAreaId();
-                }
-
                 $postage = $module->getMinPostage(
-                    $areasArray,
+                    $country,
                     $deliveryModuleOptionEvent->getCart()->getWeight(),
                     $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country),
-                    $code
+                    $code,
+                    $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale()
                 );
 
                 $postageTax = 0; //TODO

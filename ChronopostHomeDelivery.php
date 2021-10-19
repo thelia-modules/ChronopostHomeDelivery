@@ -32,11 +32,14 @@ use Thelia\Model\CountryArea;
 use Thelia\Model\Message;
 use Thelia\Model\MessageQuery;
 use Thelia\Model\ModuleQuery;
+use Thelia\Model\OrderPostage;
+use Thelia\Model\State;
 use Thelia\Module\AbstractDeliveryModule;
+use Thelia\Module\AbstractDeliveryModuleWithState;
 use Thelia\Module\BaseModule;
 use Thelia\Module\Exception\DeliveryException;
 
-class ChronopostHomeDelivery extends AbstractDeliveryModule
+class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
 {
     /** @var string */
     const DOMAIN_NAME = 'chronopostHomeDelivery';
@@ -141,9 +144,10 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
      * Verify if the are asked by the user is in the list of areas added to the shipping zones
      *
      * @param Country $country
+     * @param State $state the state to deliver to.
      * @return bool
      */
-    public function isValidDelivery(Country $country)
+    public function isValidDelivery(Country $country, State $state = null)
     {
         if (empty($this->getAllAreasForCountry($country))) {
             return false;
@@ -290,11 +294,17 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
      * @param $cartWeight
      * @param $cartAmount
      * @param $deliveryType
-     * @return int|null
+     * @return OrderPostage
      */
-    public function getMinPostage($areaIdArray, $cartWeight, $cartAmount, $deliveryType)
+    public function getMinPostage($country, $cartWeight, $cartAmount, $deliveryType, $locale)
     {
         $minPostage = null;
+
+        /** Check what areas are covered in the shipping zones defined by the admin */
+        $areaIdArray = $this->getAllAreasForCountry($country);
+        if (empty($areaIdArray)) {
+            throw new DeliveryException("Your delivery country is not covered by Chronopost");
+        }
 
         foreach ($areaIdArray as $areaId) {
             try {
@@ -313,7 +323,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
             }
         }
 
-        return $minPostage;
+        return $this->buildOrderPostage($minPostage, $country, $locale);
     }
 
     /**
@@ -341,10 +351,11 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
      * Return the postage of an ongoing order, or the minimum expected postage before the user chooses what delivery types he wants.
      *
      * @param Country $country
+     * @param State $state the state to deliver to.
      * @return float|int|\Thelia\Model\OrderPostage
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function getPostage(Country $country)
+    public function getPostage(Country $country, State $state = null)
     {
         $request = $this->getRequest();
 
@@ -369,11 +380,6 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
             $deliveryArray = $this->getActivatedDeliveryTypes();
         }
 
-        /** Check what areas are covered in the shipping zones defined by the admin */
-        $areaIdArray = $this->getAllAreasForCountry($country);
-        if (empty($areaIdArray)) {
-            throw new DeliveryException("Your delivery country is not covered by Chronopost");
-        }
 
         $postage = null;
 
@@ -382,10 +388,10 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
          */
         if ($deliveryArray !== null) {
             $y = 0;
-            $postage = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount, $deliveryArray[$y]);
+            $postage = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryArray[$y], $request->getSession()->getLang()->getLocale());
 
             while (isset($deliveryArray[$y]) && !empty($deliveryArray[$y]) && null !== $deliveryArray[$y]) {
-                if (($postage > ($minPost = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount, $deliveryArray[$y])) || $postage === null)
+                if (($postage > ($minPost = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryArray[$y], $request->getSession()->getLang()->getLocale())) || $postage === null)
                     && $minPost !== null
                 ) {
                     $postage = $minPost;
@@ -406,7 +412,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModule
         //    $postage = 0.000001;
         //}
 
-        return (float)$postage;
+        return $postage;
     }
 
     /**
