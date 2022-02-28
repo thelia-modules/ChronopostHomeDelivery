@@ -323,6 +323,10 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
             }
         }
 
+        if ($minPostage === null){
+            return null;
+        }
+
         return $this->buildOrderPostage($minPostage, $country, $locale);
     }
 
@@ -391,9 +395,8 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
             $postage = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryArray[$y], $request->getSession()->getLang()->getLocale());
 
             while (isset($deliveryArray[$y]) && !empty($deliveryArray[$y]) && null !== $deliveryArray[$y]) {
-                if (($postage > ($minPost = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryArray[$y], $request->getSession()->getLang()->getLocale())) || $postage === null)
-                    && $minPost !== null
-                ) {
+                $minPost = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryArray[$y], $request->getSession()->getLang()->getLocale());
+                if ($minPost !== null  && ($postage > $minPost || $postage === null)) {
                     $postage = $minPost;
                 }
                 $y++;
