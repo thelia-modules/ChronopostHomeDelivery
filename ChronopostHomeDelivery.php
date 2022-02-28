@@ -51,14 +51,8 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
      */
     public function postActivation(ConnectionInterface $con = null): void
     {
-        try {
-            /** Security to not erase user configuration on reactivation */
-            ChronopostHomeDeliveryDeliveryModeQuery::create()->findOne();
-            ChronopostHomeDeliveryAreaFreeshippingQuery::create()->findOne();
-        } catch (\Exception $e) {
-            $database = new Database($con->getWrappedConnection());
-            $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
-        }
+        $database = new Database($con);
+        $database->insertSql(null, [__DIR__.'/Config/thelia.sql']);
 
         /** Default config values */
         $defaultConfig = [
