@@ -16,7 +16,8 @@ class ChronopostHomeDeliveryConst
         "ChronoExpress" => "17",
         "ChronoClassic" => "44",
         "Fresh13"       => "2R",
-        "Chrono10"     => "2"
+        "Chrono10"     => "2",
+        "ChronoFreeze13"=> "2S"
     ];
     /** @TODO Add other delivery types */
 
