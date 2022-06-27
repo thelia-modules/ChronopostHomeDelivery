@@ -198,6 +198,22 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
 
         return null;
     }
+    
+    /**
+     * Return all the options available for the module
+     * 
+     * @return array
+     */
+    public static function getOptions() {
+        $options = [];
+        foreach (ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES as $title => $code) {
+            $options[] = [
+                'code' => $code,
+                'title' => $title,
+            ];
+        }
+        return $options;
+    }
 
     /**
      * Return the postage price for a given area, cart weight, cart amount, and delivery type
