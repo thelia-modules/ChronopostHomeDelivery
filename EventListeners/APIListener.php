@@ -6,6 +6,7 @@ namespace ChronopostHomeDelivery\EventListeners;
 
 use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
+use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
 use OpenApi\Events\DeliveryModuleOptionEvent;
 use OpenApi\Events\OpenApiEvents;
 use OpenApi\Model\Api\DeliveryModuleOption;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\CountryArea;
+use Thelia\Model\LangQuery;
 use Thelia\Model\PickupLocation;
 use Thelia\Module\Exception\DeliveryException;
 
@@ -42,9 +44,11 @@ class APIListener implements EventSubscriberInterface
         }
 
         $activatedDeliveryTypes = ChronopostHomeDelivery::getActivatedDeliveryTypes();
+        $deliveryModes = ChronopostHomeDeliveryDeliveryModeQuery::create()->find();
+        $lang = $this->requestStack->getCurrentRequest()->getSession()->getLang();
 
-        foreach (ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES as $name => $code) {
-            if (!in_array($code, $activatedDeliveryTypes, false)) {
+        foreach ($deliveryModes as $deliveryMode) {
+            if (!in_array($deliveryMode->getCode(), $activatedDeliveryTypes, false)) {
                 continue ;
             }
 
@@ -59,8 +63,8 @@ class APIListener implements EventSubscriberInterface
                     $country,
                     $deliveryModuleOptionEvent->getCart()->getWeight(),
                     $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country),
-                    $code,
-                    $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale()
+                    $deliveryMode->getCode(),
+                    $lang->getLocale()
                 );
 
                 if (null === $orderPostage) {
@@ -77,9 +81,9 @@ class APIListener implements EventSubscriberInterface
             /** @var DeliveryModuleOption $deliveryModuleOption */
             $deliveryModuleOption = $this->modelFactory->buildModel('DeliveryModuleOption');
             $deliveryModuleOption
-                ->setCode($code)
+                ->setCode($deliveryMode->getCode())
                 ->setValid($isValid)
-                ->setTitle($name)
+                ->setTitle($deliveryMode->setLocale($lang->getLocale())->getTitle())
                 ->setImage('')
                 ->setMinimumDeliveryDate($minimumDeliveryDate)
                 ->setMaximumDeliveryDate($maximumDeliveryDate)
