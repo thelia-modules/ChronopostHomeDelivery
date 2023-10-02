@@ -16,12 +16,13 @@
 
                 <ul id="tabbed-menu" class="nav nav-tabs">
 
-                    <li class="{if $tab eq "configure"}active{/if}"><a data-toggle="tab" href="#configure">{intl l="Advanced configuration" d='chronopost.home.delivery.bo.default'}</a></li>
+                    <li class="{if $tab eq "configure"}active{/if}"><a data-toggle="tab" href="#configure">{intl l="Advanced configuration" d='chronoposthomedelivery.bo.default'}</a></li>
 
                     {loop type="chronopost.home.delivery.delivery.mode" name="delivery_mode" backend_context=1}
-                        <li class="{if $tab eq "prices_slices_tab_{$ID}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab_{$ID}">{intl l="Price slices for \"%mode\"" d='chronopost.home.delivery.bo.default' mode={$TITLE}}</a></li>
+                        <li class="{if $tab eq "prices_slices_tab_{$ID}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab_{$ID}">{intl l="Price slices for \"%mode\"" d='chronoposthomedelivery.bo.default' mode={$TITLE}}</a></li>
                     {/loop}
 
+                    <li class="{if $tab eq "tax_rule"}active{/if}"><a data-toggle="tab" href="#tax_rule">{intl l="Tax Rule" d='chronoposthomedelivery.bo.default'}</a> </li>
                 </ul>
 
 
@@ -82,7 +83,7 @@
 
                                             {form_field form=$form field="freeshipping"}
                                                 <label>
-                                                    {intl l="Activate total free shipping " d="chronopost.home.delivery.bo.default"}
+                                                    {intl l="Activate total free shipping " d="chronoposthomedelivery.bo.default"}
                                                 </label>
 
                                                 <div class="switch-small freeshipping-activation-ChronopostHomeDelivery" data-id="{$deliveryModeId}" data-on="success" data-off="danger" data-on-label="<i class='glyphicon glyphicon-ok-circle'></i>" data-off-label="<i class='glyphicon glyphicon-remove-circle'></i>">
@@ -98,7 +99,7 @@
                                 <div class="col-md-6" id="freeshipping-from-{$deliveryModeId}" {if $isChronopostHomeDeliveryFreeShipping eq 1} style="display:none;" {/if}>
                                     <form action="{url path="/admin/module/chronopost-home-delivery/freeshipping_from"}"  method="post">
                                         <div class="input-group">
-                                            <span class="input-group-addon {if $FREESHIPPING_FROM}alert-success{/if}">{intl l="Or activate free shipping from (€) :" d="chronopost.home.delivery.bo.default"}</span>
+                                            <span class="input-group-addon {if $FREESHIPPING_FROM}alert-success{/if}">{intl l="Or activate free shipping from (€) :" d="chronoposthomedelivery.bo.default"}</span>
                                             <input type="hidden" name="delivery-mode" value="{$deliveryModeId}">
                                             <input type="number" name="price" class="form-control" value="{$FREESHIPPING_FROM}">
                                             <span class="input-group-btn">
@@ -134,14 +135,14 @@
                                                 <tr>
                                                     <th>
                                                         <label class="clearfix">
-                                                            <small>{intl d='chronopost.home.delivery.bo.default' l="Area : "}</small> {$NAME}
+                                                            <small>{intl d='chronoposthomedelivery.bo.default' l="Area : "}</small> {$NAME}
                                                         </label>
                                                     </th>
                                                     <th width="40%">
                                                         <div id="area-freeshipping-{$area_id}" {if $isChronopostHomeDeliveryFreeShipping eq 1}  style="display:none;" {/if}>
                                                             <form action="{url path="/admin/module/chronopost-home-delivery/area_freeshipping"}"  method="post">
                                                                 <div class="input-group">
-                                                                    <span class="input-group-addon {if $area_id }alert-success{/if}">{intl l="Activate free shipping from (€) :" d="chronopost.home.delivery.bo.default"}</span>
+                                                                    <span class="input-group-addon {if $area_id }alert-success{/if}">{intl l="Activate free shipping from (€) :" d="chronoposthomedelivery.bo.default"}</span>
                                                                     <input type="hidden" name="area-id" value="{$area_id}">
                                                                     <input type="hidden" name="delivery-mode" value="{$deliveryModeId}">
 
@@ -165,10 +166,10 @@
                                                 </thead>
                                                 <thead>
                                                 <tr>
-                                                    <th class="col-md-3">{intl l="Weight up to ... kg" d='chronopost.home.delivery.bo.default'}</th>
-                                                    <th class="col-md-3">{intl l="Untaxed Price up to ... %symbol" symbol=$currencySymbol d='chronopost.home.delivery.bo.default'}</th>
-                                                    <th class="col-md-5">{intl l="Price (%symbol)" symbol=$currencySymbol d='chronopost.home.delivery.bo.default'}</th>
-                                                    <th class="col-md-1">{intl l="Actions" d='chronopost.home.delivery.bo.default'}</th>
+                                                    <th class="col-md-3">{intl l="Weight up to ... kg" d='chronoposthomedelivery.bo.default'}</th>
+                                                    <th class="col-md-3">{intl l="Untaxed Price up to ... %symbol" symbol=$currencySymbol d='chronoposthomedelivery.bo.default'}</th>
+                                                    <th class="col-md-5">{intl l="Price (%symbol)" symbol=$currencySymbol d='chronoposthomedelivery.bo.default'}</th>
+                                                    <th class="col-md-1">{intl l="Actions" d='chronoposthomedelivery.bo.default'}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -186,12 +187,12 @@
                                                         <th class="col-md-1">
                                                             <div class="btn-group">
                                                                 {loop type="auth" name="can_change" role="ADMIN" module="customdelivery" access="UPDATE"}
-                                                                    <a class="btn btn-default btn-xs js-slice-save" title="{intl d='chronopost.home.delivery.bo.default' l='Save this price slice'}">
+                                                                    <a class="btn btn-default btn-xs js-slice-save" title="{intl d='chronoposthomedelivery.bo.default' l='Save this price slice'}">
                                                                         <span class="glyphicon glyphicon-floppy-disk"></span>
                                                                     </a>
                                                                 {/loop}
                                                                 {loop type="auth" name="can_change" role="ADMIN" module="customdelivery" access="DELETE"}
-                                                                    <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='chronopost.home.delivery.bo.default' l='Delete this price slice'}" data-id="{$ID}">
+                                                                    <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='chronoposthomedelivery.bo.default' l='Delete this price slice'}" data-id="{$ID}">
                                                                         <span class="glyphicon glyphicon-trash"></span>
                                                                     </a>
                                                                 {/loop}
@@ -213,7 +214,7 @@
                                                             <input type="text" data-field="price" class="form-control js-slice-price" value="" />
                                                         </th>
                                                         <th class="col-md-1">
-                                                            <a class="btn btn-default btn-xs js-slice-add" title="{intl d='chronopost.home.delivery.bo.default' l='Add this price slice'}" >
+                                                            <a class="btn btn-default btn-xs js-slice-add" title="{intl d='chronoposthomedelivery.bo.default' l='Add this price slice'}" >
                                                                 <span class="glyphicon glyphicon-plus"></span>
                                                             </a>
                                                         </th>
@@ -228,9 +229,9 @@
                                 {elseloop rel="area_loop"}
                                     <div class="col-md-12">
                                         <div class="alert alert-warning">
-                                            {intl d='chronopost.home.delivery.bo.default' l="You should first attribute shipping zones to the modules: "}
+                                            {intl d='chronoposthomedelivery.bo.default' l="You should first attribute shipping zones to the modules: "}
                                             <a href="{url path="/admin/configuration/shipping_zones/update/$module_id"}">
-                                                {intl d='chronopost.home.delivery.bo.default' l="manage shipping zones"}
+                                                {intl d='chronoposthomedelivery.bo.default' l="manage shipping zones"}
                                             </a>
                                         </div>
                                     </div>
@@ -240,6 +241,24 @@
                         </div>
                     {/loop}
 
+                    <div id="tax_rule" class="tab-pane {if $tab eq "tax_rule"}active{/if} form-container">
+                        <br>
+                        <div class="title">
+                            {intl l="Chronopost Tax Rule configuration" d='chronoposthomedelivery.bo.default'}
+                        </div>
+
+                        {form name="chronoposthomedelivery_form_chronopost_home_delivery_tax_rule_form"}
+                        <form action="{url path="/admin/module/ChronopostHomeDelivery/tax_rule/save"}" method="post" >
+                            {form_hidden_fields}
+
+                            {render_form_field field='tax_rule_id'}
+
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">{intl l="Save"}</button>
+                            </span>
+                        </form>
+                        {/form}
+                    </div>
                 </div>
             </div>
         </div>
@@ -251,7 +270,7 @@
 
     dialog_id       = "chronopost_home_delivery_dialog"
     dialog_body     = ""
-    dialog_title    = {intl d='chronopost.home.delivery.bo.default' l="Message"}
+    dialog_title    = {intl d='chronoposthomedelivery.bo.default' l="Message"}
     }
 
     {* JS Templates *}
@@ -269,12 +288,12 @@
             <th class="col-md-1">
                 <div class="btn-group">
                     {loop type="auth" name="can_change" role="ADMIN" module="chronopost" access="UPDATE"}
-                        <a class="btn btn-default btn-xs js-slice-save" title="{intl d='chronopost.home.delivery.bo.default' l='Save this price slice'}">
+                        <a class="btn btn-default btn-xs js-slice-save" title="{intl d='chronoposthomedelivery.bo.default' l='Save this price slice'}">
                             <span class="glyphicon glyphicon-floppy-disk"></span>
                         </a>
                     {/loop}
                     {loop type="auth" name="can_change" role="ADMIN" module="chronopost" access="DELETE"}
-                        <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='chronopost.home.delivery.bo.default' l='Delete this price slice'}" data-id="<%=id %>">
+                        <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='chronoposthomedelivery.bo.default' l='Delete this price slice'}" data-id="<%=id %>">
                             <span class="glyphicon glyphicon-trash"></span>
                         </a>
                     {/loop}
