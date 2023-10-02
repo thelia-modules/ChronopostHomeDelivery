@@ -4,9 +4,9 @@ namespace ChronopostHomeDelivery\Form;
 
 
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
-use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryMode;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
@@ -14,13 +14,13 @@ use Thelia\Model\LangQuery;
 
 class ChronopostHomeDeliveryConfigurationForm extends BaseForm
 {
-    protected function buildForm()
+    protected function buildForm(): void
     {
         $config = ChronopostHomeDeliveryConst::getConfig();
 
         $this->formBuilder
 
-            /** Chronopost basic informations */
+            /** Chronopost basic information */
             ->add(
                 ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_CODE_CLIENT,
                 TextType::class,
@@ -37,7 +37,7 @@ class ChronopostHomeDeliveryConfigurationForm extends BaseForm
                 ]
             )
             ->add(ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_PASSWORD,
-                TextType::class,
+                PasswordType::class,
                 [
                     'required'      => true,
                     'data'          => $config[ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_PASSWORD],
@@ -79,10 +79,10 @@ class ChronopostHomeDeliveryConfigurationForm extends BaseForm
             ;
         }
 
-        /** BUILDFORM END */
+        /** BUILD FORM END */
     }
 
-    public static function getName()
+    public static function getName(): string
     {
         return "chronopost_home_delivery_configuration_form";
     }
