@@ -9,6 +9,7 @@ use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryOrder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Thelia\Core\Event\Delivery\DeliveryPostageEvent;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
 
@@ -113,9 +114,9 @@ class SetDeliveryType implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            TheliaEvents::ORDER_SET_DELIVERY_MODULE => array('setChronopostHomeDeliveryDeliveryType', 64),
-            TheliaEvents::ORDER_BEFORE_PAYMENT => array('saveChronopostHomeDeliveryOrder', 256),
-        );
+        return [
+            TheliaEvents::ORDER_SET_DELIVERY_MODULE => ['setChronopostHomeDeliveryDeliveryType', 64],
+            TheliaEvents::ORDER_BEFORE_PAYMENT => ['saveChronopostHomeDeliveryOrder', 256],
+        ];
     }
 }
