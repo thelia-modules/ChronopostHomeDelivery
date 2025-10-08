@@ -21,6 +21,9 @@ class Postage implements EventSubscriberInterface
     }
     public function moduleDeliveryPostage(DeliveryPostageEvent $event)
     {
+        if (!$this->checkModule($event->getModule())) {
+            return;
+        }
         $request = $this->getRequest();
         $deliveryType = $request->getSession()->get('ChronopostHomeDeliveryDeliveryType');
         if (!in_array($deliveryType, ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES)) {
@@ -29,6 +32,11 @@ class Postage implements EventSubscriberInterface
         $postage = (new ChronopostHomeDelivery())->getMinPostage($event->getCountry(), $event->getCart()->getWeight(), $event->getCart()->getTaxedAmount($event->getCountry()), $deliveryType, $request->getLocale());
         $event->setPostage($postage);
 
+    }
+
+    protected function checkModule($module)
+    {
+        return $module instanceof ChronopostHomeDelivery;
     }
 
     public static function getSubscribedEvents()
