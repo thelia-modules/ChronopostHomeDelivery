@@ -3,11 +3,8 @@
 namespace ChronopostHomeDelivery\Loop;
 
 
-use ChronopostHomeDelivery\ChronopostHomeDelivery;
-use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
-use Propel\Runtime\ActiveQuery\Criteria;
-use Thelia\Core\Template\Element\BaseI18nLoop;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -16,35 +13,35 @@ use Thelia\Core\Template\Loop\Argument\Argument;
 use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 use Thelia\Model\Base\LangQuery;
 
+/**
+ *
+ * @method int|null getLangId()
+ * @method int|null getEditI18n()
+ * @method string[] getByCode()
+ */
 class ChronopostHomeDeliveryDeliveryMode extends BaseLoop implements PropelSearchLoopInterface
 {
     /**
      * Unused
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createAnyTypeArgument('lang_id'),
-            Argument::createBooleanTypeArgument('edit_i18n')
+            Argument::createBooleanTypeArgument('edit_i18n'),
+            Argument::createAlphaNumStringListTypeArgument('by_code')
         );
     }
 
     /**
-     * @return ChronopostHomeDeliveryDeliveryModeQuery|\Propel\Runtime\ActiveQuery\ModelCriteria
+     * @return ChronopostHomeDeliveryDeliveryModeQuery|ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ChronopostHomeDeliveryDeliveryModeQuery|ModelCriteria
     {
-        $config = ChronopostHomeDeliveryConst::getConfig();
-        $modes = ChronopostHomeDeliveryDeliveryModeQuery::create();
+        $q = ChronopostHomeDeliveryDeliveryModeQuery::create()
+            ->filterEnabledQuery($this->getByCode() ?? []);
 
-        $enabledDeliveryTypes = [];
-        foreach (ChronopostHomeDeliveryConst::getDeliveryTypesStatusKeys() as $deliveryTypeName => $statusKey) {
-            $enabledDeliveryTypes[] = $config[$statusKey] ? ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES[$deliveryTypeName] : '';
-        }
-
-        $modes->filterByCode($enabledDeliveryTypes, Criteria::IN);
-
-        return $modes;
+        return $q;
     }
 
     /**

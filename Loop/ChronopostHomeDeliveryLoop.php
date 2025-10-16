@@ -27,8 +27,8 @@ class ChronopostHomeDeliveryLoop extends BaseLoop implements PropelSearchLoopInt
     protected function getArgDefinitions()
     {
         return new ArgumentCollection(
-            Argument::createIntTypeArgument('area_id', null, true),
-            Argument::createIntTypeArgument('delivery_mode_id', null, true)
+            Argument::createIntTypeArgument('area_id', null, false),
+            Argument::createIntTypeArgument('delivery_mode_id', null, false)
         );
     }
 
@@ -40,12 +40,15 @@ class ChronopostHomeDeliveryLoop extends BaseLoop implements PropelSearchLoopInt
         $areaId = $this->getAreaId();
         $modeId = $this->getDeliveryModeId();
 
-        $areaPrices = ChronopostHomeDeliveryPriceQuery::create()
-            ->filterByDeliveryModeId($modeId)
-            ->filterByAreaId($areaId)
-            ->orderByWeightMax();
+        $areaPrices = ChronopostHomeDeliveryPriceQuery::create();
+        if (!is_null($areaId)) {
+            $areaPrices->filterByAreaId($areaId);
+        }
+        if (!is_null($modeId)) {
+            $areaPrices->filterByDeliveryModeId($modeId);
+        }
 
-        return $areaPrices;
+        return $areaPrices->orderByWeightMax();
     }
 
     /**
@@ -57,12 +60,14 @@ class ChronopostHomeDeliveryLoop extends BaseLoop implements PropelSearchLoopInt
         /** @var ChronopostHomeDeliveryPrice $price */
         foreach ($loopResult->getResultDataCollection() as $price) {
             $loopResultRow = new LoopResultRow($price);
+
             $loopResultRow
                 ->set("SLICE_ID", $price->getId())
                 ->set("MAX_WEIGHT", $price->getWeightMax())
                 ->set("MAX_PRICE", $price->getPriceMax())
                 ->set("PRICE", $price->getPrice())
                 ->set("FRANCO", $price->getFrancoMinPrice())
+                ->set("AREA_ID", $price->getAreaId())
             ;
             $loopResult->addRow($loopResultRow);
         }

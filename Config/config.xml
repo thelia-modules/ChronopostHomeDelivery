@@ -13,6 +13,7 @@
     <forms>
         <form name="chronopost_home_delivery_configuration_form" class="ChronopostHomeDelivery\Form\ChronopostHomeDeliveryConfigurationForm" />
         <form name="chronopost.home.delivery.freeshipping.form" class="ChronopostHomeDelivery\Form\ChronopostHomeDeliveryFreeShippingForm" />
+        <form name="chronopost.home.delivery.area.freeshipping.form" class="ChronopostHomeDelivery\Form\ChronopostHomeDeliveryAreaFreeShippingForm" />
         <form name="chronopost.home.delivery.add.price.form" class="ChronopostHomeDelivery\Form\ChronopostHomeDeliveryAddPriceForm" />
         <form name="chronopost.home.delivery.update.price.form" class="ChronopostHomeDelivery\Form\ChronopostHomeDeliveryUpdatePriceForm" />
     </forms>

@@ -10,7 +10,7 @@
 {/loop}
 
 
-    <div class="general-block-decorator">
+    <div class="general-block-decorator chronopost-home-delivery-panel">
         <div class="row">
             <div class="col-md-12">
 
@@ -19,7 +19,7 @@
                     <li class="{if $tab eq "configure"}active{/if}"><a data-toggle="tab" href="#configure">{intl l="Advanced configuration" d='chronoposthomedelivery.bo.default'}</a></li>
 
                     {loop type="chronopost.home.delivery.delivery.mode" name="delivery_mode" backend_context=1}
-                        <li class="{if $tab eq "prices_slices_tab_{$ID}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab_{$ID}">{intl l="Price slices for \"%mode\"" d='chronoposthomedelivery.bo.default' mode={$TITLE}}</a></li>
+                        <li class="{if $tab eq "prices_slices_tab_{$ID}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab_{$ID}">{intl l='Price slices for "%mode"' d='chronoposthomedelivery.bo.default' mode={$TITLE}}</a></li>
                     {/loop}
 
                     <li class="{if $tab eq "tax_rule"}active{/if}"><a data-toggle="tab" href="#tax_rule">{intl l="Tax Rule" d='chronoposthomedelivery.bo.default'}</a> </li>
@@ -38,7 +38,7 @@
                             {$price_error = $smarty.get.price_error|default:null}
                             {$price_error_id = $smarty.get.price_error_id|default:null}
 
-                            <div class="col-md-12 row">
+                            <div>
                             {form name="chronopost_home_delivery_mode"}
                                 <form action="{url path='/admin/module/ChronopostHomeDelivery/config/delivery-mode'}" method="post">
                                 {include
@@ -47,13 +47,13 @@
                                 hide_save_and_close_button = true
                                 page_url = {url path="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_$deliveryModeId"}
                                 }
-                                <div class="col-md-3 row">
+                                <div>
                                     {form_hidden_fields}
                                     {form_field field="success_url"}
-                                        <input type="hidden" name="{$name}" value="{url path="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_$deliveryModeId"}">
+                                        <input type="hidden" class="input-chronopost-home-delivery-success-url" name="{$name}" value="{url path="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_$deliveryModeId"}">
                                     {/form_field}
                                     {form_field field="error_url"}
-                                        <input type="hidden" name="{$name}" value="{url path="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_$deliveryModeId"}">
+                                        <input type="hidden" class="input-chronopost-home-delivery-error-url" name="{$name}" value="{url path="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_$deliveryModeId"}">
                                     {/form_field}
                                     {form_field field="delivery_mode_id"}
                                         <input type="hidden" name="{$name}" value="{$deliveryModeId}">
@@ -113,14 +113,8 @@
                             <br/>
 
                             <div class="alert alert-info">
-                                {intl l="You can create price slices by specifying a maximum cart weight and/or a maximum cart price." d='socolissimo.bo.default'}
-                                {intl l="The slices are ordered by maximum cart weight then by maximum cart price." d='socolissimo.bo.default'}
-                                {intl l="If a cart matches multiple slices, it will take the last slice following that order." d='socolissimo.bo.default'}
-                                {intl l="If you don't specify a cart weight in a slice, it will have priority over the slices with weight." d='socolissimo.bo.default'}
-                                {intl l="If you don't specify a cart price in a slice, it will have priority over the other slices with the same weight." d='socolissimo.bo.default'}
-                                {intl l="If you specify both, the cart will require to have a lower weight AND a lower price in order to match the slice." d='socolissimo.bo.default'}
+                                {intl l="chronopost_home_delivery.bo.explain_price_slice" d='chronoposthomedelivery.bo.default'}
                             </div>
-
                             <div class="slices" class="form-container">
 
                                 {loop type="module" name="module-id-loop" code="ChronopostHomeDelivery"}
@@ -128,103 +122,116 @@
                                 {/loop}
                                 {loop type="area" name="area_loop" module_id=$module_id backend_context=true}
                                 {$area_id=$ID}
-                                    <div class="col-md-12">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-condensed table-left-aligned">
-                                                <thead>
-                                                <tr>
-                                                    <th>
-                                                        <label class="clearfix">
-                                                            <small>{intl d='chronoposthomedelivery.bo.default' l="Area : "}</small> {$NAME}
-                                                        </label>
-                                                    </th>
-                                                    <th width="40%">
-                                                        <div id="area-freeshipping-{$area_id}" {if $isChronopostHomeDeliveryFreeShipping eq 1}  style="display:none;" {/if}>
-                                                            <form action="{url path="/admin/module/chronopost-home-delivery/area_freeshipping"}"  method="post">
-                                                                <div class="input-group">
-                                                                    <span class="input-group-addon {if $area_id }alert-success{/if}">{intl l="Activate free shipping from (€) :" d="chronoposthomedelivery.bo.default"}</span>
-                                                                    <input type="hidden" name="area-id" value="{$area_id}">
-                                                                    <input type="hidden" name="delivery-mode" value="{$deliveryModeId}">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-condensed table-left-aligned">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <label class="clearfix">
+                                                        <small>{intl d='chronoposthomedelivery.bo.default' l="Area : "}</small> {$NAME}
+                                                    </label>
+                                                </th>
+                                                <th colspan="2">
+                                                    <div id="area-freeshipping-{$area_id}" {if $isChronopostHomeDeliveryFreeShipping eq 1}  style="display:none;" {/if}>
+                                                        {form  name="chronopost.home.delivery.area.freeshipping.form"}
+                                                        <form action="{url path="/admin/module/chronopost-home-delivery/area_freeshipping"}"  method="post">
 
+                                                            {form_field field="success_url"}
+                                                                <input type="hidden" class="input-chronopost-home-delivery-success-url" name="{$name}" value="{url path="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_$deliveryModeId"}">
+                                                            {/form_field}
+                                                            {form_field field="error_url"}
+                                                                <input type="hidden" class="input-chronopost-home-delivery-error-url" name="{$name}" value="{url path="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_$deliveryModeId"}">
+                                                            {/form_field}
+                                                            {form_field field="delivery_mode_id"}
+                                                                <input type="hidden" name="{$name}" value="{$deliveryModeId}">
+                                                            {/form_field}
+                                                            {form_field field="area"}
+                                                                <input type="hidden" name="{$name}" value="{$area_id}">
+                                                            {/form_field}
+                                                            {form_hidden_fields}
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon {if $area_id }alert-success{/if}">{intl l="Activate free shipping from (€) :" d="chronoposthomedelivery.bo.default"}</span>
+
+                                                                {form_field field="cart_amount"}
                                                                     {ifloop rel="area_freeshipping"}
                                                                     {loop type="chronopost.home.delivery.area.freeshipping" name="area_freeshipping" area_id=$area_id delivery_mode_id=$deliveryModeId}
-                                                                        <input type="number" step="0.01" name="cart-amount" class="form-control" value="{$CART_AMOUNT}">
+                                                                        <input type="number" step="0.01" name="{$name}" class="form-control" value="{$CART_AMOUNT}">
                                                                     {/loop}
                                                                     {/ifloop}
                                                                     {elseloop rel="area_freeshipping"}
-                                                                        <input type="number" step="0.01" name="cart-amount" class="form-control" value="">
+                                                                        <input type="number" step="0.01" name="{$name}" class="form-control" value="">
                                                                     {/elseloop}
+                                                                {/form_field}
 
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-default" type="submit">{intl l="Save"}</button>
-                                                                    </span>
-                                                                </div>
-                                                            </form>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-default" type="submit">{intl l="Save"}</button>
+                                                                </span>
+                                                            </div>
+                                                        </form>
+                                                        {/form}
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <thead>
+                                            <tr>
+                                                <th class="col-md-3">{intl l="Weight up to ... kg" d='chronoposthomedelivery.bo.default'}</th>
+                                                <th class="col-md-3">{intl l="Untaxed Price up to ... %symbol" symbol=$currencySymbol d='chronoposthomedelivery.bo.default'}</th>
+                                                <th class="col-md-5">{intl l="Price (%symbol)" symbol=$currencySymbol d='chronoposthomedelivery.bo.default'}</th>
+                                                <th class="col-md-1">{intl l="Actions" d='chronoposthomedelivery.bo.default'}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {loop type="chronopost.home.delivery" name="chronopost_home_delivery_area_$ID" area_id={$area_id} delivery_mode_id={$deliveryModeId} }
+                                                <tr class="js-slice" data-area="{$area_id}" data-id="{$SLICE_ID}" data-delivmode="{$deliveryModeId}">
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="{$MAX_WEIGHT}" data-old="{$MAX_WEIGHT}" />
+                                                    </th>
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="{$MAX_PRICE}" data-old="{$MAX_PRICE}" />
+                                                    </th>
+                                                    <th class="col-md-5">
+                                                        <input type="text" data-field="price" class="form-control js-slice-price" value="{$PRICE}" data-old="{$PRICE}" />
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        <div class="btn-group">
+                                                            {loop type="auth" name="can_change" role="ADMIN" module="ChronopostHomeDelivery" access="UPDATE"}
+                                                                <a class="btn btn-default btn-xs js-slice-save" title="{intl d='chronoposthomedelivery.bo.default' l='Save this price slice'}">
+                                                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                                                </a>
+                                                            {/loop}
+                                                            {loop type="auth" name="can_change" role="ADMIN" module="ChronopostHomeDelivery" access="DELETE"}
+                                                                <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='chronoposthomedelivery.bo.default' l='Delete this price slice'}" data-id="{$ID}">
+                                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                                </a>
+                                                            {/loop}
                                                         </div>
                                                     </th>
                                                 </tr>
-                                                </thead>
-                                                <thead>
-                                                <tr>
-                                                    <th class="col-md-3">{intl l="Weight up to ... kg" d='chronoposthomedelivery.bo.default'}</th>
-                                                    <th class="col-md-3">{intl l="Untaxed Price up to ... %symbol" symbol=$currencySymbol d='chronoposthomedelivery.bo.default'}</th>
-                                                    <th class="col-md-5">{intl l="Price (%symbol)" symbol=$currencySymbol d='chronoposthomedelivery.bo.default'}</th>
-                                                    <th class="col-md-1">{intl l="Actions" d='chronoposthomedelivery.bo.default'}</th>
+                                            {/loop}
+
+                                            {* New slice *}
+                                            {loop type="auth" name="can_change" role="ADMIN" module="ChronopostHomeDelivery" access="CREATE"}
+                                                <tr class="js-slice-new" data-area="{$area_id}" data-id="0" data-delivmode="{$deliveryModeId}">
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="" />
+                                                    </th>
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="" />
+                                                    </th>
+                                                    <th class="col-md-5">
+                                                        <input type="text" data-field="price" class="form-control js-slice-price" value="" />
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        <a class="btn btn-default btn-xs js-slice-add" title="{intl d='chronoposthomedelivery.bo.default' l='Add this price slice'}" >
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </a>
+                                                    </th>
                                                 </tr>
-                                                </thead>
-                                                <tbody>
-                                                {loop type="chronopost.home.delivery" name="chronopost_home_delivery_area_$ID" area_id={$area_id} delivery_mode_id={$deliveryModeId} }
-                                                    <tr class="js-slice" data-area="{$area_id}" data-id="{$SLICE_ID}" data-delivmode="{$deliveryModeId}">
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="{$MAX_WEIGHT}" data-old="{$MAX_WEIGHT}" />
-                                                        </th>
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="{$MAX_PRICE}" data-old="{$MAX_PRICE}" />
-                                                        </th>
-                                                        <th class="col-md-5">
-                                                            <input type="text" data-field="price" class="form-control js-slice-price" value="{$PRICE}" data-old="{$PRICE}" />
-                                                        </th>
-                                                        <th class="col-md-1">
-                                                            <div class="btn-group">
-                                                                {loop type="auth" name="can_change" role="ADMIN" module="customdelivery" access="UPDATE"}
-                                                                    <a class="btn btn-default btn-xs js-slice-save" title="{intl d='chronoposthomedelivery.bo.default' l='Save this price slice'}">
-                                                                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                                                                    </a>
-                                                                {/loop}
-                                                                {loop type="auth" name="can_change" role="ADMIN" module="customdelivery" access="DELETE"}
-                                                                    <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='chronoposthomedelivery.bo.default' l='Delete this price slice'}" data-id="{$ID}">
-                                                                        <span class="glyphicon glyphicon-trash"></span>
-                                                                    </a>
-                                                                {/loop}
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                {/loop}
-
-                                                {* New slice *}
-                                                {loop type="auth" name="can_change" role="ADMIN" module="chronopost" access="CREATE"}
-                                                    <tr class="js-slice-new" data-area="{$area_id}" data-id="0" data-delivmode="{$deliveryModeId}">
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="" />
-                                                        </th>
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="" />
-                                                        </th>
-                                                        <th class="col-md-5">
-                                                            <input type="text" data-field="price" class="form-control js-slice-price" value="" />
-                                                        </th>
-                                                        <th class="col-md-1">
-                                                            <a class="btn btn-default btn-xs js-slice-add" title="{intl d='chronoposthomedelivery.bo.default' l='Add this price slice'}" >
-                                                                <span class="glyphicon glyphicon-plus"></span>
-                                                            </a>
-                                                        </th>
-                                                    </tr>
-                                                {/loop}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                            {/loop}
+                                            </tbody>
+                                        </table>
                                     </div>
-
                                 {/loop}
                                 {elseloop rel="area_loop"}
                                     <div class="col-md-12">
@@ -287,12 +294,12 @@
             </th>
             <th class="col-md-1">
                 <div class="btn-group">
-                    {loop type="auth" name="can_change" role="ADMIN" module="chronopost" access="UPDATE"}
+                    {loop type="auth" name="can_change" role="ADMIN" module="ChronopostHomeDelivery" access="UPDATE"}
                         <a class="btn btn-default btn-xs js-slice-save" title="{intl d='chronoposthomedelivery.bo.default' l='Save this price slice'}">
                             <span class="glyphicon glyphicon-floppy-disk"></span>
                         </a>
                     {/loop}
-                    {loop type="auth" name="can_change" role="ADMIN" module="chronopost" access="DELETE"}
+                    {loop type="auth" name="can_change" role="ADMIN" module="ChronopostHomeDelivery" access="DELETE"}
                         <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='chronoposthomedelivery.bo.default' l='Delete this price slice'}" data-id="<%=id %>">
                             <span class="glyphicon glyphicon-trash"></span>
                         </a>
@@ -301,4 +308,3 @@
             </th>
         </tr>
     </script>
-

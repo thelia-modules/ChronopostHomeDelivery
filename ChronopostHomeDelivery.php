@@ -13,9 +13,15 @@
 namespace ChronopostHomeDelivery;
 
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
+use ChronopostHomeDelivery\Event\CartAmountEvent;
+use ChronopostHomeDelivery\Event\CartDeliveryModeEvent;
+use ChronopostHomeDelivery\Event\CartPostagePriceEvent;
+use ChronopostHomeDelivery\Event\CartPostageWeightEvent;
+use ChronopostHomeDelivery\Event\ChronopostHomeDeliveryEvents;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryAreaFreeshippingQuery;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryMode;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
+use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPrice;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPriceQuery;
 use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -224,7 +230,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
      * @param Request|Session $request
      * @return null|string
      */
-    public function getDeliveryType($request)
+    public static function getDeliveryType($request)
     {
         $deliveryMode = $request->get('deliveryModuleOptionCode');
 
@@ -261,13 +267,13 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
      * Return the postage price for a given area, cart weight, cart amount, and delivery type
      *
      * @param $areaId
-     * @param $weight
-     * @param int $cartAmount
+     * @param float $weight
+     * @param float $cartAmount
      * @param null $deliveryCode
-     * @return int
+     * @return float
      * @throws \Exception
      */
-    public static function getPostageAmount($areaId, $weight, $cartAmount = 0, $deliveryCode = null)
+    public static function getPostageAmount($areaId, $weight, $cartAmount = 0.0, $deliveryCode = null)
     {
         if (null === $deliveryType = ChronopostHomeDeliveryDeliveryModeQuery::create()->findOneByCode($deliveryCode)) {
             throw new \Exception("The delivery code given is not supported by the module.");
@@ -288,7 +294,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
         }
 
         /** Set the initial postage price as 0 */
-        $postage = 0;
+        $postage = 0.0;
 
         /** If free shipping is enabled, skip and return 0 */
         if (!$freeShipping) {
@@ -328,7 +334,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
                 ->orderByWeightMax()
                 ->orderByPriceMax();
 
-            /** Find the correct postage price for the cart weight and price according to the area and delivery mode in $areaPrices*/
+            /** @var ChronopostHomeDeliveryPrice $firstPrice Find the correct postage price for the cart weight and price according to the area and delivery mode in $areaPrices*/
             $firstPrice = $areaPrices
                 ->find()
                 ->getFirst()
@@ -420,19 +426,24 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
     public function getPostage(Country $country, State $state = null)
     {
         $request = $this->getRequest();
+        $cart = $request->getSession()->getSessionCart($this->getDispatcher());
 
-        $cartWeight = $request->getSession()->getSessionCart($this->getDispatcher())->getWeight();
-        $cartAmount = $request->getSession()->getSessionCart($this->getDispatcher())->getTaxedAmount($country);
+        //get the cart weight
+        $postageEvent = new CartPostageWeightEvent($cart);
+        $this->getDispatcher()->dispatch($postageEvent, ChronopostHomeDeliveryEvents::CART_POSTAGE_WEIGHT);
+        $cartWeight = $postageEvent->getWeight();
 
+        // Get the cart amount
+        $cartAmountEvent = new CartAmountEvent($cart);
+        $cartAmountEvent->setCountry($country);
+        $this->getDispatcher()->dispatch($cartAmountEvent, ChronopostHomeDeliveryEvents::CART_AMOUNT);
+        $cartAmount = $cartAmountEvent->getTaxedAmount();
 
-        /** Get the delivery type of an ongoing order by looking at the request */
-        $deliveryType = $this->getDeliveryType($request);
+        // Get the delivery mode code
+        $deliveryModeEvent = new CartDeliveryModeEvent($cart);
+        $this->getDispatcher()->dispatch($deliveryModeEvent, ChronopostHomeDeliveryEvents::CART_DELIVERY_MODE);
 
-        /** If no delivery type was found, search again in the session. */
-        if (null === $deliveryType) {
-            $deliveryType = $this->getDeliveryType($request->getSession());
-        }
-
+        $deliveryType    = $deliveryModeEvent->getDeliveryModeCode();
         $deliveryArray[] = $deliveryType;
 
         /** If still no delivery type is found, create an array of all activated delivery types to search
@@ -465,6 +476,12 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
         if (null === $postage) {
             throw new DeliveryException("Chronopost delivery unavailable for your cart weight or delivery country");
         }
+
+        // allows you to override the postage calculation when freeShipping is not included in the delivery module.
+        $cartPostagePriceEvent = new CartPostagePriceEvent($cart);
+        $cartPostagePriceEvent->setOrderPostage($postage);
+        $this->getDispatcher()->dispatch($cartPostagePriceEvent, ChronopostHomeDeliveryEvents::CART_POSTAGE_PRICE);
+
 
         /** Get the postage for the shipping zones we've just got */
 

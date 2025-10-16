@@ -9,11 +9,12 @@ use ChronopostHomeDelivery\Form\ChronopostHomeDeliveryConfigurationForm;
 use ChronopostHomeDelivery\Form\ChronopostHomeDeliveryModeForm;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
-use Symfony\Component\Routing\Annotation\Route;
 use Thelia\Model\LangQuery;
 
 /**
@@ -40,10 +41,11 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
     /**
      * Save configuration form - Chronopost informations
      *
-     * @return mixed|null|\Symfony\Component\HttpFoundation\Response|\Thelia\Core\HttpFoundation\Response
+     * @param Request $request
+     * @return mixed|null|Response|\Thelia\Core\HttpFoundation\Response
      * @Route("", name="_save", methods="POST")
      */
-    public function saveAction()
+    public function saveAction(Request $request)
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], 'ChronopostHomeDelivery', AccessManager::UPDATE)) {
             return $response;
@@ -62,8 +64,8 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
             foreach (ChronopostHomeDeliveryConst::getDeliveryTypesStatusKeys() as $statusKey) {
                 ChronopostHomeDelivery::setConfigValue($statusKey, $data[$statusKey]);
             }
-
         } catch (\Exception $e) {
+            $request->getSession()->getFlashBag()->add('error', $e->getMessage());
             $this->setupFormErrorContext(
                 Translator::getInstance()->trans(
                     "Error",
@@ -74,7 +76,7 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
                 $form
             );
 
-            return $this->viewAction('configure');
+            return $this->generateErrorRedirect($form);
         }
 
         return $this->generateSuccessRedirect($form);
@@ -106,8 +108,8 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
                 ->save();
 
             return $this->generateSuccessRedirect($form);
-
         } catch (\Exception $e) {
+            $request->getSession()->getFlashBag()->add('error', $e->getMessage());
             $this->setupFormErrorContext(
                 Translator::getInstance()->trans(
                     "Error",

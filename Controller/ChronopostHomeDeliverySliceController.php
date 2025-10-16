@@ -8,9 +8,9 @@ use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPrice;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPriceQuery;
 use Propel\Runtime\Map\TableMap;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Annotation\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin/module/chronopost-home-delivery/slice", name="chronopost-home-delivery_slice")
@@ -25,7 +25,7 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
      */
     public function saveSliceAction(RequestStack $requestStack)
     {
-        $response = $this->checkAuth([], ['chronopost'], AccessManager::UPDATE);
+        $response = $this->checkAuth([], [ChronopostHomeDelivery::getModuleCode()], AccessManager::UPDATE);
 
         if (null !== $response) {
             return $response;
@@ -173,7 +173,7 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
      */
     public function deleteSliceAction(RequestStack $requestStack)
     {
-        $response = $this->checkAuth([], ['chronopost'], AccessManager::DELETE);
+        $response = $this->checkAuth([], [ChronopostHomeDelivery::getModuleCode()], AccessManager::DELETE);
 
         if (null !== $response) {
             return $response;

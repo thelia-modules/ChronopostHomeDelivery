@@ -1,7 +1,7 @@
 <br>
-<div class="col-md-12 row form-container">
+<div class="form-container">
     {form name="chronopost_home_delivery_configuration_form" type="chronopost_home_delivery_configuration_form"}
-        <form class="" action="{url path='/admin/module/ChronopostHomeDelivery/config'}" method="post">
+        <form class="chronopost-home-delivery-configuration-form" action="{url path='/admin/module/ChronopostHomeDelivery/config'}" method="post">
             <div class="title">{intl l="Chronopost informations"}</div>
                 {include
                 file      = "includes/inner-form-toolbar.html"
@@ -10,39 +10,42 @@
                 }
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="panel-title">{intl l="Service Configuration" d='chronopost.home.delivery.bo.default'}</div>
+                    <div class="panel-title">{intl l="Service Configuration" d='chronoposthomedelivery.bo.default'}</div>
                 </div>
                 <div class="panel-body">
-                    <div class="col-md-6">
-                        {form_hidden_fields form=$form}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {form_hidden_fields form=$form}
 
-                        {if $form_error}
-                            <div class="alert alert-danger">{$form_error_message}</div>
-                        {/if}
+                            {if $form_error}
+                                <div class="alert alert-danger">{$form_error_message}</div>
+                            {/if}
 
-                        {render_form_field field="success_url" value={url path="/admin/module/ChronopostHomeDelivery"}}
+                            {render_form_field field="success_url" value={url path="/admin/module/ChronopostHomeDelivery"}}
+                            {render_form_field field="error_url" value={url path="/admin/module/ChronopostHomeDelivery"}}
 
-                        {render_form_field field="chronopost_home_delivery_code"}
+                            {render_form_field field="chronopost_home_delivery_code"}
 
-                        <div class="form-group">
-                            {form_field field="chronopost_home_delivery_password"}
+                            <div class="form-group">
+                                {form_field field="chronopost_home_delivery_password"}
 
-                            <label for="{$name}" class="control-label">{$label}{if $required} <span class="required">*</span>{/if} : </label>
-                            <input type="password" id="mdp" name="{$name}" class="form-control" value="{$data}" placeholder="Your Chronopost password" aria-describedby="pwdHelpBlock">
-                            <button type="button" class="eye btn btn-primary btn-responsive" style="color:#FFF;background-color:#f6993c" onclick="togglePwd('mdp');">
-                                <i class="glyphicon glyphicon-eye-open"></i>
-                            </button>
-                            {/form_field}
+                                <label for="{$name}" class="control-label">{$label}{if $required} <span class="required">*</span>{/if} : </label>
+                                <input type="password" id="mdp" name="{$name}" class="form-control" value="{$data}" placeholder="Your Chronopost password" aria-describedby="pwdHelpBlock">
+                                <button type="button" class="eye btn btn-primary btn-responsive" style="color:#FFF;background-color:#f6993c" onclick="togglePwd('mdp');">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                </button>
+                                {/form_field}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <b>{intl l="Allowed shipping modes" d='chronopost.home.delivery.bo.default'}</b>
+                        <div class="col-md-6">
+                            <b>{intl l="Allowed shipping modes" d='chronoposthomedelivery.bo.default'}</b>
 
-                        {chronopostHomeDeliveryGetDeliveryTypesStatusKeys}
-                        {foreach from=$chronopostHomeDeliveryDeliveryTypesStatusKeys key=k item=statusKey}
-                            {render_form_field field={$statusKey}}
-                        {/foreach}
+                            {chronopostHomeDeliveryGetDeliveryTypesStatusKeys}
+                            {foreach from=$chronopostHomeDeliveryDeliveryTypesStatusKeys key=k item=statusKey}
+                                {render_form_field field={$statusKey}}
+                            {/foreach}
+                        </div>
                     </div>
                 </div>
             </div>

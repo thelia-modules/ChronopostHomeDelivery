@@ -31,22 +31,20 @@
                 data: form.serialize()
             }).done(function(){
                 $("#loading-event").remove();
+                if (is_checked) {
+                    $('#config-btn-0').removeClass('disabled');
+                    $('#table-prices-chronopost-home-delivery-'+mode).hide('slow');
+                    $('#freeshipping-from-'+mode).hide('slow');
+                } else {
+                    $('#config-btn-0').addClass('disabled');
+                    $('#table-prices-chronopost-home-delivery-'+mode).show('slow');
+                    $('#freeshipping-from-'+mode).show('slow');
+                }
             })
-                .success(function() {
-                    if (is_checked) {
-                        $('#config-btn-0').removeClass('disabled');
-                        $('#table-prices-chronopost-home-delivery-'+mode).hide('slow');
-                        $('#freeshipping-from-'+mode).hide('slow');
-                    } else {
-                        $('#config-btn-0').addClass('disabled');
-                        $('#table-prices-chronopost-home-delivery-'+mode).show('slow');
-                        $('#freeshipping-from-'+mode).show('slow');
-                    }
-                })
-                .fail(function(jqXHR, textStatus, errorThrown){
-                    $('#freeshipping-failed-body').html(jqXHR.responseJSON.error);
-                    $("#freeshipping-failed").modal("show");
-                });
+            .fail(function(jqXHR, textStatus, errorThrown){
+                $('#freeshipping-failed-body').html(jqXHR.responseJSON.error);
+                $("#freeshipping-failed").modal("show");
+            });
 
         });
 
