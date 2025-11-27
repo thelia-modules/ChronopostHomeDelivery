@@ -21,7 +21,7 @@ class ChronopostHomeDeliveryDeliveryMode extends BaseLoop implements PropelSearc
     /**
      * Unused
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createAnyTypeArgument('lang_id'),
@@ -32,7 +32,7 @@ class ChronopostHomeDeliveryDeliveryMode extends BaseLoop implements PropelSearc
     /**
      * @return ChronopostHomeDeliveryDeliveryModeQuery|\Propel\Runtime\ActiveQuery\ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): \Propel\Runtime\ActiveQuery\ModelCriteria
     {
         $config = ChronopostHomeDeliveryConst::getConfig();
         $modes = ChronopostHomeDeliveryDeliveryModeQuery::create();
@@ -51,7 +51,7 @@ class ChronopostHomeDeliveryDeliveryMode extends BaseLoop implements PropelSearc
      * @param LoopResult $loopResult
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         $session = $this->getCurrentRequest()->getSession();
 

@@ -44,7 +44,7 @@
             <tag name="hook.event_listener" event="module.config-js" type="back" method="onModuleConfigJs" />
         </hook>
         <hook id="chronopost.home.delivery.hook.front" class="ChronopostHomeDelivery\Hook\FrontHook" scope="request">
-            <tag name="hook.event_listener" event="order-delivery.extra" />
+            <tag name="hook.event_listener" type="front" event="order-delivery.extra" />
         </hook>
     </hooks>
 

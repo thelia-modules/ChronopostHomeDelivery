@@ -5,6 +5,7 @@ namespace ChronopostHomeDelivery\Loop;
 
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPrice;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryPriceQuery;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -24,7 +25,7 @@ class ChronopostHomeDeliveryLoop extends BaseLoop implements PropelSearchLoopInt
     /**
      * @return ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('area_id', null, true),
@@ -33,9 +34,9 @@ class ChronopostHomeDeliveryLoop extends BaseLoop implements PropelSearchLoopInt
     }
 
     /**
-     * @return ChronopostHomeDeliveryPriceQuery|\Propel\Runtime\ActiveQuery\ModelCriteria
+     * @return ChronopostHomeDeliveryPriceQuery|ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $areaId = $this->getAreaId();
         $modeId = $this->getDeliveryModeId();
@@ -52,7 +53,7 @@ class ChronopostHomeDeliveryLoop extends BaseLoop implements PropelSearchLoopInt
      * @param LoopResult $loopResult
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var ChronopostHomeDeliveryPrice $price */
         foreach ($loopResult->getResultDataCollection() as $price) {

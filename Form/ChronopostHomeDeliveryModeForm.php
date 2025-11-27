@@ -41,7 +41,7 @@ class ChronopostHomeDeliveryModeForm extends BaseForm
      *
      * @return string
      */
-    public static function getName()
+    public static function getName(): string
     {
         return "chronopost_home_delivery_mode";
     }

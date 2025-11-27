@@ -17,7 +17,7 @@ class ChronopostHomeDeliveryAreaFreeshipping extends BaseLoop implements PropelS
     /**
      * @return ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('area_id'),
@@ -28,7 +28,7 @@ class ChronopostHomeDeliveryAreaFreeshipping extends BaseLoop implements PropelS
     /**
      * @return ChronopostHomeDeliveryAreaFreeshippingQuery|ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $areaId = $this->getAreaId();
         $mode = $this->getDeliveryModeId();
@@ -50,7 +50,7 @@ class ChronopostHomeDeliveryAreaFreeshipping extends BaseLoop implements PropelS
      * @param LoopResult $loopResult
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var \ChronopostHomeDeliveryHomeDelivery\Model\ChronopostHomeDeliveryAreaFreeshipping $mode */
         foreach ($loopResult->getResultDataCollection() as $mode) {

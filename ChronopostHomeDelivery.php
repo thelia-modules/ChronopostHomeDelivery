@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurat
 use Symfony\Component\Finder\Finder;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\HttpFoundation\Session\Session;
-use Thelia\Install\Database;
+use Thelia\Core\Install\Database;
 use Thelia\Model\Base\LangQuery;
 use Thelia\Model\Country;
 use Thelia\Model\CountryArea;
@@ -189,7 +189,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
      * @param State $state the state to deliver to.
      * @return bool
      */
-    public function isValidDelivery(Country $country, State $state = null)
+    public function isValidDelivery(Country $country, State $state = null): bool
     {
         if (empty($this->getAllAreasForCountry($country))) {
             return false;
@@ -417,7 +417,7 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
      * @return float|int|\Thelia\Model\OrderPostage
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function getPostage(Country $country, State $state = null)
+    public function getPostage(Country $country, State $state = null): float|OrderPostage
     {
         $request = $this->getRequest();
 
