@@ -10,10 +10,9 @@ use Propel\Runtime\Map\TableMap;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/chronopost-home-delivery/slice", name="chronopost-home-delivery_slice")
  */
 class ChronopostHomeDeliverySliceController extends BaseAdminController
 {
@@ -23,6 +22,7 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
      * @return mixed|null|\Thelia\Core\HttpFoundation\Response
      * @Route("/save", name="_save", methods="POST")
      */
+    #[Route('/admin/module/chronopost-home-delivery/slice', name: 'chronopost-home-delivery_slice')]
     public function saveSliceAction(RequestStack $requestStack)
     {
         $response = $this->checkAuth([], ['chronopost'], AccessManager::UPDATE);
@@ -169,8 +169,8 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
      * Delete a price slice in the delivery type being edited
      *
      * @return mixed|null|\Thelia\Core\HttpFoundation\Response
-     * @Route("/delete", name="_delete", methods="POST")
      */
+    #[Route('/delete', name: '_delete', methods: ['POST'])]
     public function deleteSliceAction(RequestStack $requestStack)
     {
         $response = $this->checkAuth([], ['chronopost'], AccessManager::DELETE);

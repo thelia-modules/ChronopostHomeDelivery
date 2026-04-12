@@ -4,7 +4,7 @@ namespace ChronopostHomeDelivery\Controller;
 
 use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Form\ChronopostHomeDeliveryTaxRuleForm;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;

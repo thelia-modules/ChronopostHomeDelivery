@@ -37,7 +37,7 @@ class ChronopostHomeDeliveryDeliveryType extends AbstractSmartyPlugin
     /**
      * @return array|SmartyPluginDescriptor[]
      */
-    public function getPluginDescriptors()
+    public function getPluginDescriptors(): array
     {
         return array(
             new SmartyPluginDescriptor("function", "chronopostHomeDeliveryDeliveryType", $this, "chronopostHomeDeliveryDeliveryType"),

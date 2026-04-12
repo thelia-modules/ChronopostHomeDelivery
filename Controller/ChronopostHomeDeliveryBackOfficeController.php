@@ -13,11 +13,10 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Model\LangQuery;
 
 /**
- * @Route("/admin/module/ChronopostHomeDelivery/config", name="ChronopostHomeDelivery_config")
  */
 class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
 {
@@ -26,6 +25,7 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
      *
      * @return \Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/ChronopostHomeDelivery/config', name: 'ChronopostHomeDelivery_config')]
     public function viewAction($tab)
     {
         return $this->render(
@@ -41,8 +41,8 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
      * Save configuration form - Chronopost informations
      *
      * @return mixed|null|\Symfony\Component\HttpFoundation\Response|\Thelia\Core\HttpFoundation\Response
-     * @Route("", name="_save", methods="POST")
      */
+    #[Route(', name=', name: '_save', methods: ['POST'])]
     public function saveAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], 'ChronopostHomeDelivery', AccessManager::UPDATE)) {
@@ -81,8 +81,8 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
     }
 
     /**
-     * @Route("/delivery-mode", name="_delivery_mode", methods="POST")
      */
+    #[Route('/delivery-mode', name: '_delivery_mode', methods: ['POST'])]
     public function updateDeliveryModeTitle(Request $request)
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], 'ChronopostHomeDelivery', AccessManager::UPDATE)) {

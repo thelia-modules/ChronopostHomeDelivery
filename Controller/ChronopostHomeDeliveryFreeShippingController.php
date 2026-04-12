@@ -14,10 +14,9 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Model\AreaQuery;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/chronopost-home-delivery", name="chronopost-home-delivery")
  */
 class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
 {
@@ -27,6 +26,7 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
      * @return mixed|null|Response|static
      * @Route("/freeshipping", name="_freeshipping", methods="POST")
      */
+    #[Route('/admin/module/chronopost-home-delivery', name: 'chronopost-home-delivery')]
     public function toggleFreeShippingActivation()
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ChronopostHomeDelivery'), AccessManager::UPDATE)) {
@@ -56,8 +56,8 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
     /**
      * @return mixed|Response
      * @throws \Propel\Runtime\Exception\PropelException
-     * @Route("/freeshipping_from", name="_freeshipping_from", methods="POST")
      */
+    #[Route('/freeshipping_from', name: '_freeshipping_from', methods: ['POST'])]
     public function setFreeShippingFrom(RequestStack $requestStack)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ChronopostHomeDelivery'), AccessManager::UPDATE)) {
@@ -92,8 +92,8 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
      * Set free shipping for a given area of the delivery type being edited.
      *
      * @return mixed|null|Response
-     * @Route("/area_freeshipping", name="_area_freeshipping", methods="POST")
      */
+    #[Route('/area_freeshipping', name: '_area_freeshipping', methods: ['POST'])]
     public function setAreaFreeShipping(RequestStack $requestStack)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ChronopostHomeDelivery'), AccessManager::UPDATE)) {
