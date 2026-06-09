@@ -76,6 +76,6 @@ class ChronopostHomeDeliveryUpdatePriceForm extends BaseForm
 
     public static function getName(): string
     {
-        return "chronopost_home_delivery_price_create";
+        return "chronopost_home_delivery_price_update";
     }
 }

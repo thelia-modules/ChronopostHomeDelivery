@@ -75,7 +75,11 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
                 $form
             );
 
-            return $this->viewAction('configure');
+            return $this->generateRedirectFromRoute(
+                'admin.module.configure',
+                [],
+                ['module_code' => 'ChronopostHomeDelivery', 'current_tab' => 'configure']
+            );
         }
 
         return $this->generateSuccessRedirect($form);

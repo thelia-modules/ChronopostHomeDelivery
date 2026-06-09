@@ -1,0 +1,139 @@
+{# Vanilla JS for the config page (no jQuery / underscore / bootstrap-switch). #}
+<template id="tpl-slice">
+    <tr class="js-slice">
+        <th class="col-md-3"><input type="text" data-field="weight-max" class="form-control js-slice-weight-max"></th>
+        <th class="col-md-3"><input type="text" data-field="price-max" class="form-control js-slice-price-max"></th>
+        <th class="col-md-5"><input type="text" data-field="price" class="form-control js-slice-price"></th>
+        <th class="col-md-1">
+            <div class="btn-group">
+                <a class="btn btn-secondary btn-sm js-slice-save" title="{{ 'Save this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}"><i class="bi bi-save"></i></a>
+                <a class="btn btn-secondary btn-sm js-slice-delete" title="{{ 'Delete this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}"><i class="bi bi-trash"></i></a>
+            </div>
+        </th>
+    </tr>
+</template>
+
+<script>
+(function () {
+    const config = {
+        urlAdd: '{{ path('chronopost-home-delivery_slice_save') }}',
+        urlDelete: '{{ path('chronopost-home-delivery_slice_delete') }}'
+    };
+
+    function showMessage(message) {
+        const dialog = document.getElementById('chronopost_home_delivery_dialog');
+        if (!dialog) { return; }
+        dialog.querySelector('.modal-body').innerHTML = message;
+        bootstrap.Modal.getOrCreateInstance(dialog).show();
+    }
+
+    function getSliceData(row) {
+        return {
+            id: row.dataset.id,
+            area: row.dataset.area,
+            deliveryModeId: row.dataset.delivmode,
+            price: row.querySelector('.js-slice-price')?.value ?? '',
+            priceMax: row.querySelector('.js-slice-price-max')?.value ?? '',
+            weightMax: row.querySelector('.js-slice-weight-max')?.value ?? ''
+        };
+    }
+
+    function postSlice(url, data) {
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new URLSearchParams(data)
+        });
+    }
+
+    function buildRow(slice, areaId, deliveryModeId) {
+        const tpl = document.getElementById('tpl-slice');
+        const row = tpl.content.cloneNode(true).querySelector('tr');
+        row.dataset.area = areaId;
+        row.dataset.delivmode = deliveryModeId;
+        row.dataset.id = slice.Id ?? slice.id ?? 0;
+        row.querySelector('.js-slice-weight-max').value = slice.WeightMax ?? slice.weightMax ?? '';
+        row.querySelector('.js-slice-price-max').value = slice.PriceMax ?? slice.priceMax ?? '';
+        row.querySelector('.js-slice-price').value = slice.Price ?? slice.price ?? '';
+        row.querySelector('.js-slice-delete')?.setAttribute('data-id', slice.Id ?? slice.id ?? 0);
+        return row;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Free-shipping switch (AJAX toggle).
+        document.querySelectorAll('.freeshipping-activation-ChronopostHomeDelivery').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const mode = this.dataset.id;
+                const form = document.getElementById('freeshippingform-' + mode);
+                if (!form) { return; }
+                fetch(form.getAttribute('action'), {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: new FormData(form)
+                }).then(function (resp) {
+                    const fromBlock = document.getElementById('freeshipping-from-' + mode);
+                    const areaBlocks = document.querySelectorAll('[id^="area-freeshipping-"]');
+                    if (input.checked) {
+                        if (fromBlock) { fromBlock.style.display = 'none'; }
+                        areaBlocks.forEach(function (b) { b.style.display = 'none'; });
+                    } else {
+                        if (fromBlock) { fromBlock.style.display = ''; }
+                        areaBlocks.forEach(function (b) { b.style.display = ''; });
+                    }
+                    if (!resp.ok) {
+                        resp.json().then(function (d) { showMessage(d.error || ''); }).catch(function () {});
+                    }
+                });
+            });
+        });
+
+        // Add a new slice.
+        document.querySelectorAll('.slices').forEach(function (container) {
+            container.addEventListener('click', function (e) {
+                const addBtn = e.target.closest('.js-slice-add');
+                const saveBtn = e.target.closest('.js-slice-save');
+                const deleteBtn = e.target.closest('.js-slice-delete');
+
+                if (addBtn || saveBtn) {
+                    const row = (addBtn || saveBtn).closest('tr');
+                    const data = getSliceData(row);
+                    postSlice(config.urlAdd, data)
+                        .then(function (r) { return r.json(); })
+                        .then(function (resp) {
+                            if (resp.success) {
+                                const newRow = buildRow(resp.slice, data.area, data.deliveryModeId);
+                                row.parentNode.insertBefore(newRow, row);
+                                if (addBtn) {
+                                    row.querySelectorAll('input').forEach(function (i) { i.value = ''; });
+                                } else {
+                                    row.remove();
+                                }
+                            } else {
+                                showMessage((resp.message || []).join('<br>'));
+                            }
+                        })
+                        .catch(function () { showMessage('An error occurred.'); });
+                }
+
+                if (deleteBtn) {
+                    const row = deleteBtn.closest('tr');
+                    const data = getSliceData(row);
+                    postSlice(config.urlDelete, data)
+                        .then(function (r) { return r.json(); })
+                        .then(function (resp) {
+                            if (resp.success) {
+                                row.remove();
+                            } else {
+                                showMessage(resp.message || '');
+                            }
+                        })
+                        .catch(function () { showMessage('An error occurred.'); });
+                }
+            });
+        });
+    });
+})();
+</script>

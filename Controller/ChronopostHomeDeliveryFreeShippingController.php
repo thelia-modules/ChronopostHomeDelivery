@@ -45,9 +45,9 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
             $deliveryMode
                 ->setFreeshippingActive($freeshipping)
                 ->save();
-            $response = Response::create('');
+            $response = new Response('');
         } catch (\Exception $e) {
-            $response = JsonResponse::create(array("error" => $e->getMessage()), 500);
+            $response = new JsonResponse(array("error" => $e->getMessage()), 500);
         }
 
         return $response;

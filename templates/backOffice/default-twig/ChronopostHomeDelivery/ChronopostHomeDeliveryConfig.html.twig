@@ -1,0 +1,213 @@
+{# Config hook fragment for the default-twig BO. NO {% extends %} — wrapped in a Bootstrap 5 card. #}
+{% set tab = app.request.query.get('current_tab')|default('configure') %}
+{% set priceError = app.request.query.get('price_error')|default(null) %}
+{% set priceErrorId = app.request.query.get('price_error_id')|default(null) %}
+
+<div class="card">
+    <div class="card-body">
+        <ul id="tabbed-menu" class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link {{ tab == 'configure' ? 'active' }}" data-bs-toggle="tab" data-bs-target="#configure" href="#configure">
+                    {{ 'Advanced configuration'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                </a>
+            </li>
+            {% for mode in deliveryModes %}
+                <li class="nav-item">
+                    <a class="nav-link {{ tab == 'prices_slices_tab_' ~ mode.id ? 'active' }}" data-bs-toggle="tab" data-bs-target="#prices_slices_tab_{{ mode.id }}" href="#prices_slices_tab_{{ mode.id }}">
+                        {{ 'Price slices for "%mode"'|trans({'%mode': mode.title}, 'chronoposthomedelivery.bo.default') }}
+                    </a>
+                </li>
+            {% endfor %}
+            <li class="nav-item">
+                <a class="nav-link {{ tab == 'tax_rule' ? 'active' }}" data-bs-toggle="tab" data-bs-target="#tax_rule" href="#tax_rule">
+                    {{ 'Tax Rule'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            {# ---- Advanced configuration tab ---- #}
+            <div id="configure" class="tab-pane {{ tab == 'configure' ? 'active' }}">
+                {% include '@ChronopostHomeDeliveryModule/backOffice/default-twig/ChronopostHomeDelivery/ChronopostHomeDeliveryAdvancedConfig.html.twig' %}
+            </div>
+
+            {# ---- One tab per enabled delivery mode ---- #}
+            {% for mode in deliveryModes %}
+                <div id="prices_slices_tab_{{ mode.id }}" class="tab-pane {{ tab == 'prices_slices_tab_' ~ mode.id ? 'active' }}">
+
+                    {# Delivery mode title #}
+                    <div class="row mb-3">
+                        <form action="{{ path('ChronopostHomeDelivery_config_delivery_mode') }}" method="post">
+                            <input type="hidden" name="success_url" value="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_{{ mode.id }}">
+                            <input type="hidden" name="error_url" value="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_{{ mode.id }}">
+                            <input type="hidden" name="delivery_mode_id" value="{{ mode.id }}">
+                            <div class="col-md-4">
+                                {{ form_row(mode.modeForm.delivery_mode_title) }}
+                            </div>
+                            {{ form_widget(mode.modeForm._token) }}
+                            <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                        </form>
+                    </div>
+
+                    {% if priceError is not null and mode.id == priceErrorId %}
+                        <div class="alert alert-danger" role="alert">{{ priceError }}</div>
+                    {% endif %}
+
+                    <div class="row mb-3">
+                        {# Free shipping switch #}
+                        <div class="col-md-4">
+                            <form action="{{ path('chronopost-home-delivery_freeshipping') }}" method="post" id="freeshippingform-{{ mode.id }}">
+                                <input type="hidden" name="delivery_mode" value="{{ mode.id }}">
+                                {{ form_widget(mode.freeshippingForm._token) }}
+                                <label class="form-label d-block">
+                                    {{ 'Activate total free shipping '|trans({}, 'chronoposthomedelivery.bo.default') }}
+                                </label>
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input freeshipping-activation-ChronopostHomeDelivery"
+                                           data-id="{{ mode.id }}" name="freeshipping" value="true" {{ mode.freeshipping_active ? 'checked' }}>
+                                </div>
+                            </form>
+                        </div>
+
+                        {# Free shipping threshold #}
+                        <div class="col-md-6" id="freeshipping-from-{{ mode.id }}" {{ mode.freeshipping_active ? 'style="display:none;"' }}>
+                            <form action="{{ path('chronopost-home-delivery_freeshipping_from') }}" method="post">
+                                <div class="input-group">
+                                    <span class="input-group-text {{ mode.freeshipping_from ? 'alert-success' }}">{{ 'Or activate free shipping from (€) :'|trans({}, 'chronoposthomedelivery.bo.default') }}</span>
+                                    <input type="hidden" name="delivery-mode" value="{{ mode.id }}">
+                                    <input type="number" name="price" class="form-control" value="{{ mode.freeshipping_from }}">
+                                    <button class="btn btn-secondary" type="submit">{{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        {{ 'You can create price slices by specifying a maximum cart weight and/or a maximum cart price.'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                        {{ 'The slices are ordered by maximum cart weight then by maximum cart price.'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                        {{ 'If a cart matches multiple slices, it will take the last slice following that order.'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                        {{ "If you don't specify a cart weight in a slice, it will have priority over the slices with weight."|trans({}, 'chronoposthomedelivery.bo.default') }}
+                        {{ "If you don't specify a cart price in a slice, it will have priority over the other slices with the same weight."|trans({}, 'chronoposthomedelivery.bo.default') }}
+                        {{ 'If you specify both, the cart will require to have a lower weight AND a lower price in order to match the slice.'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                    </div>
+
+                    <div class="slices">
+                        {% if areas is empty %}
+                            <div class="col-md-12">
+                                <div class="alert alert-warning">
+                                    {{ 'You should first attribute shipping zones to the modules: '|trans({}, 'chronoposthomedelivery.bo.default') }}
+                                    <a href="/admin/configuration/shipping_zones/update/{{ moduleId }}">
+                                        {{ 'manage shipping zones'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                                    </a>
+                                </div>
+                            </div>
+                        {% else %}
+                            {% for area in areas %}
+                                {% set areaData = area.modes[mode.id]|default(null) %}
+                                <div class="col-md-12 mb-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <label class="form-label">
+                                                        <small>{{ 'Area : '|trans({}, 'chronoposthomedelivery.bo.default') }}</small> {{ area.name }}
+                                                    </label>
+                                                </th>
+                                                <th width="40%">
+                                                    <div id="area-freeshipping-{{ area.id }}" {{ mode.freeshipping_active ? 'style="display:none;"' }}>
+                                                        <form action="{{ path('chronopost-home-delivery_area_freeshipping') }}" method="post">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text {{ area.id ? 'alert-success' }}">{{ 'Activate free shipping from (€) :'|trans({}, 'chronoposthomedelivery.bo.default') }}</span>
+                                                                <input type="hidden" name="area-id" value="{{ area.id }}">
+                                                                <input type="hidden" name="delivery-mode" value="{{ mode.id }}">
+                                                                <input type="number" step="0.01" name="cart-amount" class="form-control" value="{{ areaData ? areaData.cart_amount }}">
+                                                                <button class="btn btn-secondary" type="submit">{{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <thead>
+                                            <tr>
+                                                <th class="col-md-3">{{ 'Weight up to ... kg'|trans({}, 'chronoposthomedelivery.bo.default') }}</th>
+                                                <th class="col-md-3">{{ 'Untaxed Price up to ... %symbol'|trans({'%symbol': currencySymbol}, 'chronoposthomedelivery.bo.default') }}</th>
+                                                <th class="col-md-5">{{ 'Price (%symbol)'|trans({'%symbol': currencySymbol}, 'chronoposthomedelivery.bo.default') }}</th>
+                                                <th class="col-md-1">{{ 'Actions'|trans({}, 'chronoposthomedelivery.bo.default') }}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for slice in (areaData ? areaData.slices : []) %}
+                                                <tr class="js-slice" data-area="{{ area.id }}" data-id="{{ slice.slice_id }}" data-delivmode="{{ mode.id }}">
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="{{ slice.max_weight }}" data-old="{{ slice.max_weight }}">
+                                                    </th>
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="{{ slice.max_price }}" data-old="{{ slice.max_price }}">
+                                                    </th>
+                                                    <th class="col-md-5">
+                                                        <input type="text" data-field="price" class="form-control js-slice-price" value="{{ slice.price }}" data-old="{{ slice.price }}">
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        <div class="btn-group">
+                                                            {% if is_granted('UPDATE', {resource: 'admin.module', module: 'ChronopostHomeDelivery'}) %}
+                                                                <a class="btn btn-secondary btn-sm js-slice-save" title="{{ 'Save this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}"><i class="bi bi-save"></i></a>
+                                                            {% endif %}
+                                                            {% if is_granted('DELETE', {resource: 'admin.module', module: 'ChronopostHomeDelivery'}) %}
+                                                                <a class="btn btn-secondary btn-sm js-slice-delete" title="{{ 'Delete this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}" data-id="{{ slice.slice_id }}"><i class="bi bi-trash"></i></a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            {% endfor %}
+
+                                            {# New slice row #}
+                                            {% if is_granted('CREATE', {resource: 'admin.module', module: 'ChronopostHomeDelivery'}) %}
+                                                <tr class="js-slice-new" data-area="{{ area.id }}" data-id="0" data-delivmode="{{ mode.id }}">
+                                                    <th class="col-md-3"><input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value=""></th>
+                                                    <th class="col-md-3"><input type="text" data-field="price-max" class="form-control js-slice-price-max" value=""></th>
+                                                    <th class="col-md-5"><input type="text" data-field="price" class="form-control js-slice-price" value=""></th>
+                                                    <th class="col-md-1">
+                                                        <a class="btn btn-secondary btn-sm js-slice-add" title="{{ 'Add this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}"><i class="bi bi-plus-lg"></i></a>
+                                                    </th>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {# ---- Tax rule tab ---- #}
+            <div id="tax_rule" class="tab-pane {{ tab == 'tax_rule' ? 'active' }}">
+                <h2 class="h5 mt-3">{{ 'Chronopost Tax Rule configuration'|trans({}, 'chronoposthomedelivery.bo.default') }}</h2>
+
+                <form action="{{ path('chronopost_home_delivery_tax_rule_save') }}" method="post">
+                    {{ form_widget(taxRuleForm._token) }}
+                    <div class="mb-3">
+                        {{ form_row(taxRuleForm.tax_rule_id) }}
+                    </div>
+                    <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Slice feedback modal #}
+<div class="modal fade" id="chronopost_home_delivery_dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'Message'|trans({}, 'chronoposthomedelivery.bo.default') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>

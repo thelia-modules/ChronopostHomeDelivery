@@ -1,0 +1,52 @@
+{# Advanced configuration tab — rendered inside ChronopostHomeDeliveryConfig.html.twig #}
+<form action="{{ path('ChronopostHomeDelivery_config_save') }}" method="post" class="mt-3">
+    {{ form_widget(configForm._token) }}
+    <input type="hidden" name="success_url" value="/admin/module/ChronopostHomeDelivery">
+
+    <h2 class="h5">{{ 'Chronopost informations'|trans({}, 'chronoposthomedelivery.bo.default') }}</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title mb-0">{{ 'Service Configuration'|trans({}, 'chronopost.home.delivery.bo.default') }}</div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_row(configForm.chronopost_home_delivery_code) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(configForm.chronopost_home_delivery_password) }}
+                        <div class="input-group">
+                            {{ form_widget(configForm.chronopost_home_delivery_password, {attr: {id: 'mdp'}}) }}
+                            <button type="button" class="btn btn-secondary" onclick="chronopostTogglePwd('mdp')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {{ form_errors(configForm.chronopost_home_delivery_password) }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <b>{{ 'Allowed shipping modes'|trans({}, 'chronopost.home.delivery.bo.default') }}</b>
+                    {% for child in configForm %}
+                        {% if child.vars.name starts with 'chronopost_home_delivery_delivery_' %}
+                            <div class="mb-2">
+                                {{ form_row(child) }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-success mt-3" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+</form>
+
+<script>
+    function chronopostTogglePwd(id) {
+        var x = document.getElementById(id);
+        x.type = (x.type === "password") ? "text" : "password";
+    }
+</script>
