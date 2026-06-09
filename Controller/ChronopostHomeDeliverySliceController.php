@@ -14,15 +14,15 @@ use Symfony\Component\Routing\Attribute\Route;
 
 /**
  */
+#[Route('/admin/module/chronopost-home-delivery/slice', name: 'chronopost-home-delivery_slice')]
 class ChronopostHomeDeliverySliceController extends BaseAdminController
 {
     /**
      * Save/Create a price slice in the delivery type being edited
      *
      * @return mixed|null|\Thelia\Core\HttpFoundation\Response
-     * @Route("/save", name="_save", methods="POST")
      */
-    #[Route('/admin/module/chronopost-home-delivery/slice', name: 'chronopost-home-delivery_slice')]
+    #[Route('/save', name: '_save', methods: ['POST'])]
     public function saveSliceAction(RequestStack $requestStack)
     {
         $response = $this->checkAuth([], ['chronopost'], AccessManager::UPDATE);
