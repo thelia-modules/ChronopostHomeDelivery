@@ -18,6 +18,7 @@ use Thelia\Model\LangQuery;
 
 /**
  */
+#[Route('/admin/module/ChronopostHomeDelivery/config', name: 'ChronopostHomeDelivery_config')]
 class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
 {
     /**
@@ -25,8 +26,8 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
      *
      * @return \Thelia\Core\HttpFoundation\Response
      */
-    #[Route('/admin/module/ChronopostHomeDelivery/config', name: 'ChronopostHomeDelivery_config')]
-    public function viewAction($tab)
+    #[Route('', name: '', methods: ['GET'])]
+    public function viewAction(string $tab = 'configure')
     {
         return $this->render(
             'module-configure',
@@ -42,7 +43,7 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
      *
      * @return mixed|null|\Symfony\Component\HttpFoundation\Response|\Thelia\Core\HttpFoundation\Response
      */
-    #[Route(', name=', name: '_save', methods: ['POST'])]
+    #[Route('', name: '_save', methods: ['POST'])]
     public function saveAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], 'ChronopostHomeDelivery', AccessManager::UPDATE)) {
