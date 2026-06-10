@@ -10,6 +10,7 @@ use Propel\Runtime\Map\TableMap;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
+use Thelia\Core\Security\Resource\AdminResources;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -25,7 +26,7 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
     #[Route('/save', name: '_save', methods: ['POST'])]
     public function saveSliceAction(RequestStack $requestStack)
     {
-        $response = $this->checkAuth([], ['chronopost'], AccessManager::UPDATE);
+        $response = $this->checkAuth([AdminResources::MODULE], ['ChronopostHomeDelivery'], AccessManager::UPDATE);
 
         if (null !== $response) {
             return $response;
@@ -173,7 +174,7 @@ class ChronopostHomeDeliverySliceController extends BaseAdminController
     #[Route('/delete', name: '_delete', methods: ['POST'])]
     public function deleteSliceAction(RequestStack $requestStack)
     {
-        $response = $this->checkAuth([], ['chronopost'], AccessManager::DELETE);
+        $response = $this->checkAuth([AdminResources::MODULE], ['ChronopostHomeDelivery'], AccessManager::DELETE);
 
         if (null !== $response) {
             return $response;
