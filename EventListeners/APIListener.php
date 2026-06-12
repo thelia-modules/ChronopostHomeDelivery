@@ -7,12 +7,11 @@ namespace ChronopostHomeDelivery\EventListeners;
 use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
-use OpenApi\Events\OpenApiEvents;
-use OpenApi\Model\Api\DeliveryModuleOption;
 use OpenApi\Model\Api\ModelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Api\Bridge\Propel\Event\DeliveryModuleOptionEvent;
+use Thelia\Api\Resource\DeliveryModuleOption;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\CountryArea;
@@ -78,8 +77,7 @@ class APIListener implements EventSubscriberInterface
             $minimumDeliveryDate = ''; // TODO (with a const array code => timeToDeliver to calculate delivery date from day of order)
             $maximumDeliveryDate = ''; // TODO (with a const array code => timeToDeliver to calculate delivery date from day of order)
 
-            /** @var DeliveryModuleOption $deliveryModuleOption */
-            $deliveryModuleOption = $this->modelFactory->buildModel('DeliveryModuleOption');
+            $deliveryModuleOption = new DeliveryModuleOption();
             $deliveryModuleOption
                 ->setCode($deliveryMode->getCode())
                 ->setValid($isValid)
@@ -102,7 +100,7 @@ class APIListener implements EventSubscriberInterface
 
         /** Check for old versions of Thelia where the events used by the API didn't exists */
         if (class_exists(DeliveryModuleOptionEvent::class)) {
-            $listenedEvents[OpenApiEvents::MODULE_DELIVERY_GET_OPTIONS] = array("getDeliveryModuleOptions", 131);
+            $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_OPTIONS] = array("getDeliveryModuleOptions", 131);
         }
 
         return $listenedEvents;
