@@ -73,7 +73,7 @@
                                 <div class="col-md-4">
                                     <!-- checkbox free shipping -->
                                     {assign var="isChronopostHomeDeliveryFreeShipping" value=0}
-                                    {form  name="chronopost.home.delivery.freeshipping.form"}
+                                    {form name="chronopost_home_delivery_freeshipping"}
                                         <form action="{url path="/admin/module/chronopost-home-delivery/freeshipping"}" method="post" id="freeshippingform-{$deliveryModeId}">
                                             {form_hidden_fields form=$form}
 
