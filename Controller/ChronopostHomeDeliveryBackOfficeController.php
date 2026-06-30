@@ -100,7 +100,7 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
             $data = $this->validateForm($form)->getData();
 
             $deliveryMode = ChronopostHomeDeliveryDeliveryModeQuery::create()->findPk($data['delivery_mode_id']);
-            $lang = $request->getSession()->get('thelia.admin.edition.lang');
+            $lang = $request->hasSession() ? $request->getSession()->get('thelia.admin.edition.lang') : null;
             if ($lang === null) {
                 $lang = LangQuery::create()->filterByByDefault(1)->findOne();
             }

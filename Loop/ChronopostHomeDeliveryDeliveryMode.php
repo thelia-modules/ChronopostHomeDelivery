@@ -53,17 +53,22 @@ class ChronopostHomeDeliveryDeliveryMode extends BaseLoop implements PropelSearc
      */
     public function parseResults(LoopResult $loopResult): LoopResult
     {
-        $session = $this->getCurrentRequest()->getSession();
+        $request = $this->getCurrentRequest();
+        $session = (null !== $request && $request->hasSession()) ? $request->getSession() : null;
 
-        $lang = $session->get('thelia.current.lang');
+        $lang = $session?->get('thelia.current.lang');
         if ($this->getBackendContext()) {
-            $lang = $session->get('thelia.current.admin_lang');
+            $lang = $session?->get('thelia.current.admin_lang');
         }
         if (null !== $langId = $this->getLangId()){
             $lang = LangQuery::create()->findPk($langId);
         }
         if ($this->getEditI18n()){
-            $lang = $session->get('thelia.admin.edition.lang');
+            $lang = $session?->get('thelia.admin.edition.lang');
+        }
+
+        if (null === $lang) {
+            $lang = LangQuery::create()->findOneByByDefault(true);
         }
 
         /** @var \ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryMode $mode */

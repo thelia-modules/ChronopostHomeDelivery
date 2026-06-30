@@ -44,7 +44,12 @@ class APIListener implements EventSubscriberInterface
 
         $activatedDeliveryTypes = ChronopostHomeDelivery::getActivatedDeliveryTypes();
         $deliveryModes = ChronopostHomeDeliveryDeliveryModeQuery::create()->find();
-        $lang = $this->requestStack->getCurrentRequest()->getSession()->getLang();
+        $request = $this->requestStack->getCurrentRequest();
+        if (null === $request || !$request->hasSession()) {
+            $lang = LangQuery::create()->findOneByByDefault(true);
+        } else {
+            $lang = $request->getSession()->getLang();
+        }
 
         foreach ($deliveryModes as $deliveryMode) {
             if (!in_array($deliveryMode->getCode(), $activatedDeliveryTypes, false)) {

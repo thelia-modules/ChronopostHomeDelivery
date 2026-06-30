@@ -7,6 +7,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
+use Thelia\Model\Lang;
+use Thelia\Model\LangQuery;
 use Thelia\Model\TaxRuleI18nQuery;
 
 class ChronopostHomeDeliveryTaxRuleForm extends BaseForm
@@ -31,7 +33,10 @@ class ChronopostHomeDeliveryTaxRuleForm extends BaseForm
         /** @var Request $request */
         $request = $this->request;
 
-        $lang = $request->getSession()?->getAdminEditionLang();
+        $lang = $request->hasSession() ? $request->getSession()->getAdminEditionLang() : null;
+        if (!$lang instanceof Lang) {
+            $lang = LangQuery::create()->findOneByByDefault(true);
+        }
 
         $taxRules = TaxRuleI18nQuery::create()
             ->filterByLocale($lang->getLocale())
