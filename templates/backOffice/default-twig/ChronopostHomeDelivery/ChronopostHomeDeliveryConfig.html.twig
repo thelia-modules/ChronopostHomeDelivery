@@ -42,7 +42,11 @@
                             <input type="hidden" name="error_url" value="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_{{ mode.id }}">
                             <input type="hidden" name="delivery_mode_id" value="{{ mode.id }}">
                             <div class="col-md-4">
-                                {{ form_row(mode.modeForm.delivery_mode_title) }}
+                                <div class="mb-3">
+                                    {{ form_label(mode.modeForm.delivery_mode_title) }}
+                                    {{ form_widget(mode.modeForm.delivery_mode_title, {attr: {class: 'form-control'}}) }}
+                                    {{ form_errors(mode.modeForm.delivery_mode_title) }}
+                                </div>
                             </div>
                             {{ form_widget(mode.modeForm._token) }}
                             <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
@@ -190,7 +194,9 @@
                 <form action="{{ path('chronopost_home_delivery_tax_rule_save') }}" method="post">
                     {{ form_widget(taxRuleForm._token) }}
                     <div class="mb-3">
-                        {{ form_row(taxRuleForm.tax_rule_id) }}
+                        {{ form_label(taxRuleForm.tax_rule_id) }}
+                        {{ form_widget(taxRuleForm.tax_rule_id, {attr: {class: 'form-select'}}) }}
+                        {{ form_errors(taxRuleForm.tax_rule_id) }}
                     </div>
                     <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
                 </form>

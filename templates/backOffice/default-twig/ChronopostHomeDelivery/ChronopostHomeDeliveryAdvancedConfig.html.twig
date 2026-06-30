@@ -13,7 +13,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        {{ form_row(configForm.chronopost_home_delivery_code) }}
+                        {{ form_label(configForm.chronopost_home_delivery_code) }}
+                        {{ form_widget(configForm.chronopost_home_delivery_code, {attr: {class: 'form-control'}}) }}
+                        {{ form_errors(configForm.chronopost_home_delivery_code) }}
                     </div>
                     <div class="mb-3">
                         {{ form_label(configForm.chronopost_home_delivery_password) }}
@@ -31,8 +33,10 @@
                     <b>{{ 'Allowed shipping modes'|trans({}, 'chronopost.home.delivery.bo.default') }}</b>
                     {% for child in configForm %}
                         {% if child.vars.name starts with 'chronopost_home_delivery_delivery_' %}
-                            <div class="mb-2">
-                                {{ form_row(child) }}
+                            <div class="form-check mb-3">
+                                {{ form_widget(child, {attr: {class: 'form-check-input'}}) }}
+                                {{ form_label(child, null, {label_attr: {class: 'form-check-label'}}) }}
+                                {{ form_errors(child) }}
                             </div>
                         {% endif %}
                     {% endfor %}
