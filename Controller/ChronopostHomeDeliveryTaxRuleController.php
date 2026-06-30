@@ -15,7 +15,7 @@ use Thelia\Tools\URL;
 #[Route('/admin/module/ChronopostHomeDelivery/tax_rule', name: 'chronopost_home_delivery_tax_rule_')]
 class ChronopostHomeDeliveryTaxRuleController extends BaseAdminController
 {
-    #[Route('/save', name: 'save')]
+    #[Route('/save', name: 'save', methods: ['POST'])]
     public function saveTaxRule()
     {
         if (null !== $response = $this->checkAuth(AdminResources::MODULE, ChronopostHomeDelivery::DOMAIN_NAME, AccessManager::UPDATE)) {
