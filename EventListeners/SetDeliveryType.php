@@ -58,8 +58,16 @@ class SetDeliveryType implements EventSubscriberInterface
 
             $orderId = $orderEvent->getOrder()->getId();
 
+            /**
+             * Legacy front sets 'ChronopostHomeDeliveryDeliveryType' through ORDER_SET_DELIVERY_MODULE,
+             * an event the new Twig checkout no longer dispatches. The new checkout stores the selected
+             * option code (the Chronopost delivery code) under 'deliveryModuleOption' instead.
+             */
+            $selectedCode = $request->getSession()->get('ChronopostHomeDeliveryDeliveryType')
+                ?? $request->getSession()->get('deliveryModuleOption');
+
             foreach (ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES as $name => $code) {
-                if ($code === $request->getSession()->get('ChronopostHomeDeliveryDeliveryType')) {
+                if ($code === $selectedCode) {
                     $chronopostOrder
                         ->setDeliveryType($name)
                         ->setDeliveryCode($code)
