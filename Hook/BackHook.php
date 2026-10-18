@@ -58,7 +58,7 @@ class BackHook extends BaseHook
             ->createView()
             ->getView();
 
-        $event->add($this->render($this->resolveTemplateName('ChronopostHomeDelivery/ChronopostHomeDeliveryConfig'), [
+        $event->add($this->render('ChronopostHomeDelivery/ChronopostHomeDeliveryConfig.html.twig', [
             'configForm' => $configForm,
             'taxRuleForm' => $taxRuleForm,
             'deliveryModes' => $this->getDeliveryModes($locale),
@@ -70,18 +70,7 @@ class BackHook extends BaseHook
 
     public function onModuleConfigJs(HookRenderEvent $event): void
     {
-        $event->add($this->render($this->resolveTemplateName('ChronopostHomeDelivery/module-config-js')));
-    }
-
-    /**
-     * Append the current parser extension so the same hook serves the Smarty (default)
-     * and Twig (default-twig) back-office templates: Smarty -> ".html", Twig -> ".html.twig".
-     */
-    private function resolveTemplateName(string $baseName): string
-    {
-        $extension = ParserResolver::getCurrentParser()?->getFileExtension() ?? 'html';
-
-        return $baseName.'.'.$extension;
+        $event->add($this->render('ChronopostHomeDelivery/module-config-js.html.twig'));
     }
 
     /**
