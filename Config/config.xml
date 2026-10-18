@@ -4,10 +4,4 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
-    <loops>
-        <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryLoop" name="chronopost.home.delivery" />
-        <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryDeliveryMode" name="chronopost.home.delivery.delivery.mode" />
-        <loop class="ChronopostHomeDelivery\Loop\ChronopostHomeDeliveryAreaFreeshipping" name="chronopost.home.delivery.area.freeshipping" />
-    </loops>
-
 </config>
