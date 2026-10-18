@@ -7,7 +7,6 @@ namespace ChronopostHomeDelivery\EventListeners;
 use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Config\ChronopostHomeDeliveryConst;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
-use OpenApi\Model\Api\ModelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Api\Bridge\Propel\Event\DeliveryModuleOptionEvent;
@@ -21,12 +20,10 @@ use Thelia\Module\Exception\DeliveryException;
 
 class APIListener implements EventSubscriberInterface
 {
-    protected $modelFactory;
     protected $requestStack;
 
-    public function __construct(ModelFactory $modelFactory = null, RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->modelFactory = $modelFactory;
         $this->requestStack = $requestStack;
     }
 
