@@ -448,16 +448,19 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
         /** If no delivery type was given, the loop should continue until the postage for each delivery types was
          *  found, then return the minimum one. Otherwise, the loop should stop after the first iteration.
          */
-        if ($deliveryArray !== null) {
-            $y = 0;
-            $postage = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryArray[$y], $request->getSession()->getLang()->getLocale());
+        /** No delivery type activated: nothing to price, the module is unavailable. */
+        if (empty($deliveryArray)) {
+            throw new DeliveryException("Chronopost delivery unavailable: no delivery type is activated");
+        }
 
-            while (isset($deliveryArray[$y]) && !empty($deliveryArray[$y]) && null !== $deliveryArray[$y]) {
-                $minPost = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryArray[$y], $request->getSession()->getLang()->getLocale());
-                if ($minPost !== null  && ($postage > $minPost || $postage === null)) {
-                    $postage = $minPost;
-                }
-                $y++;
+        $locale = $request->getSession()->getLang()->getLocale();
+        foreach ($deliveryArray as $deliveryMode) {
+            if (empty($deliveryMode)) {
+                continue;
+            }
+            $minPost = $this->getMinPostage($country, $cartWeight, $cartAmount, $deliveryMode, $locale);
+            if (null !== $minPost && (null === $postage || $postage > $minPost)) {
+                $postage = $minPost;
             }
         }
 
