@@ -3,11 +3,11 @@
     {{ form_widget(configForm._token) }}
     <input type="hidden" name="success_url" value="/admin/module/ChronopostHomeDelivery">
 
-    <h2 class="h5">{{ 'Chronopost informations'|trans({}, 'chronoposthomedelivery.bo.default') }}</h2>
+    <h2 class="h5">{{ 'Chronopost informations'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</h2>
 
     <div class="card">
         <div class="card-header">
-            <div class="card-title mb-0">{{ 'Service Configuration'|trans({}, 'chronopost.home.delivery.bo.default') }}</div>
+            <div class="card-title mb-0">{{ 'Service Configuration'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</div>
         </div>
         <div class="card-body">
             <div class="row">
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <b>{{ 'Allowed shipping modes'|trans({}, 'chronopost.home.delivery.bo.default') }}</b>
+                    <b>{{ 'Allowed shipping modes'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</b>
                     {% for child in configForm %}
                         {% if child.vars.name starts with 'chronopost_home_delivery_delivery_' %}
                             <div class="form-check mb-3">
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <button class="btn btn-success mt-3" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+    <button class="btn btn-success mt-3" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</button>
 </form>
 
 <script>
