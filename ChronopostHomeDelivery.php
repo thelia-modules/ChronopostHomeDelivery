@@ -230,8 +230,8 @@ class ChronopostHomeDelivery extends AbstractDeliveryModuleWithState
 
         $deliveryCodes = array_change_key_case(ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES, CASE_LOWER);
 
-        if (array_key_exists(strtolower($deliveryMode),$deliveryCodes)) {
-            return $deliveryCodes[strtolower($deliveryMode)];
+        if (array_key_exists(strtolower((string) $deliveryMode),$deliveryCodes)) {
+            return $deliveryCodes[strtolower((string) $deliveryMode)];
         }
 
         if(in_array($deliveryMode, ChronopostHomeDeliveryConst::CHRONOPOST_HOME_DELIVERY_DELIVERY_CODES, true)){
