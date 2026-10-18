@@ -8,19 +8,19 @@
         <ul id="tabbed-menu" class="nav nav-tabs mb-3">
             <li class="nav-item">
                 <a class="nav-link {{ tab == 'configure' ? 'active' }}" data-bs-toggle="tab" data-bs-target="#configure" href="#configure">
-                    {{ 'Advanced configuration'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                    {{ 'Advanced configuration'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
                 </a>
             </li>
             {% for mode in deliveryModes %}
                 <li class="nav-item">
                     <a class="nav-link {{ tab == 'prices_slices_tab_' ~ mode.id ? 'active' }}" data-bs-toggle="tab" data-bs-target="#prices_slices_tab_{{ mode.id }}" href="#prices_slices_tab_{{ mode.id }}">
-                        {{ 'Price slices for "%mode"'|trans({'%mode': mode.title}, 'chronoposthomedelivery.bo.default') }}
+                        {{ 'Price slices for "%mode"'|trans({'%mode': mode.title}, 'chronoposthomedelivery.bo.default-twig') }}
                     </a>
                 </li>
             {% endfor %}
             <li class="nav-item">
                 <a class="nav-link {{ tab == 'tax_rule' ? 'active' }}" data-bs-toggle="tab" data-bs-target="#tax_rule" href="#tax_rule">
-                    {{ 'Tax Rule'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                    {{ 'Tax Rule'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
                 </a>
             </li>
         </ul>
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             {{ form_widget(mode.modeForm._token) }}
-                            <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                            <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</button>
                         </form>
                     </div>
 
@@ -64,7 +64,7 @@
                                 <input type="hidden" name="delivery_mode" value="{{ mode.id }}">
                                 {{ form_widget(mode.freeshippingForm._token) }}
                                 <label class="form-label d-block">
-                                    {{ 'Activate total free shipping '|trans({}, 'chronoposthomedelivery.bo.default') }}
+                                    {{ 'Activate total free shipping '|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
                                 </label>
                                 <div class="form-check form-switch">
                                     <input type="checkbox" class="form-check-input freeshipping-activation-ChronopostHomeDelivery"
@@ -77,31 +77,31 @@
                         <div class="col-md-6" id="freeshipping-from-{{ mode.id }}" {{ mode.freeshipping_active ? 'style="display:none;"' }}>
                             <form action="{{ path('chronopost-home-delivery_freeshipping_from') }}" method="post">
                                 <div class="input-group">
-                                    <span class="input-group-text {{ mode.freeshipping_from ? 'alert-success' }}">{{ 'Or activate free shipping from (€) :'|trans({}, 'chronoposthomedelivery.bo.default') }}</span>
+                                    <span class="input-group-text {{ mode.freeshipping_from ? 'alert-success' }}">{{ 'Or activate free shipping from (€) :'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</span>
                                     <input type="hidden" name="delivery-mode" value="{{ mode.id }}">
                                     <input type="number" name="price" class="form-control" value="{{ mode.freeshipping_from }}">
-                                    <button class="btn btn-secondary" type="submit">{{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                                    <button class="btn btn-secondary" type="submit">{{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
                     <div class="alert alert-info">
-                        {{ 'You can create price slices by specifying a maximum cart weight and/or a maximum cart price.'|trans({}, 'chronoposthomedelivery.bo.default') }}
-                        {{ 'The slices are ordered by maximum cart weight then by maximum cart price.'|trans({}, 'chronoposthomedelivery.bo.default') }}
-                        {{ 'If a cart matches multiple slices, it will take the last slice following that order.'|trans({}, 'chronoposthomedelivery.bo.default') }}
-                        {{ "If you don't specify a cart weight in a slice, it will have priority over the slices with weight."|trans({}, 'chronoposthomedelivery.bo.default') }}
-                        {{ "If you don't specify a cart price in a slice, it will have priority over the other slices with the same weight."|trans({}, 'chronoposthomedelivery.bo.default') }}
-                        {{ 'If you specify both, the cart will require to have a lower weight AND a lower price in order to match the slice.'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                        {{ 'You can create price slices by specifying a maximum cart weight and/or a maximum cart price.'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
+                        {{ 'The slices are ordered by maximum cart weight then by maximum cart price.'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
+                        {{ 'If a cart matches multiple slices, it will take the last slice following that order.'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
+                        {{ "If you don't specify a cart weight in a slice, it will have priority over the slices with weight."|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
+                        {{ "If you don't specify a cart price in a slice, it will have priority over the other slices with the same weight."|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
+                        {{ 'If you specify both, the cart will require to have a lower weight AND a lower price in order to match the slice.'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
                     </div>
 
                     <div class="slices">
                         {% if areas is empty %}
                             <div class="col-md-12">
                                 <div class="alert alert-warning">
-                                    {{ 'You should first attribute shipping zones to the modules: '|trans({}, 'chronoposthomedelivery.bo.default') }}
+                                    {{ 'You should first attribute shipping zones to the modules: '|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
                                     <a href="/admin/configuration/shipping_zones/update/{{ moduleId }}">
-                                        {{ 'manage shipping zones'|trans({}, 'chronoposthomedelivery.bo.default') }}
+                                        {{ 'manage shipping zones'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
                                     </a>
                                 </div>
                             </div>
@@ -115,18 +115,18 @@
                                             <tr>
                                                 <th>
                                                     <label class="form-label">
-                                                        <small>{{ 'Area : '|trans({}, 'chronoposthomedelivery.bo.default') }}</small> {{ area.name }}
+                                                        <small>{{ 'Area : '|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</small> {{ area.name }}
                                                     </label>
                                                 </th>
                                                 <th width="40%">
                                                     <div id="area-freeshipping-{{ area.id }}" {{ mode.freeshipping_active ? 'style="display:none;"' }}>
                                                         <form action="{{ path('chronopost-home-delivery_area_freeshipping') }}" method="post">
                                                             <div class="input-group">
-                                                                <span class="input-group-text {{ area.id ? 'alert-success' }}">{{ 'Activate free shipping from (€) :'|trans({}, 'chronoposthomedelivery.bo.default') }}</span>
+                                                                <span class="input-group-text {{ area.id ? 'alert-success' }}">{{ 'Activate free shipping from (€) :'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</span>
                                                                 <input type="hidden" name="area-id" value="{{ area.id }}">
                                                                 <input type="hidden" name="delivery-mode" value="{{ mode.id }}">
                                                                 <input type="number" step="0.01" name="cart-amount" class="form-control" value="{{ areaData ? areaData.cart_amount }}">
-                                                                <button class="btn btn-secondary" type="submit">{{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                                                                <button class="btn btn-secondary" type="submit">{{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -135,10 +135,10 @@
                                             </thead>
                                             <thead>
                                             <tr>
-                                                <th class="col-md-3">{{ 'Weight up to ... kg'|trans({}, 'chronoposthomedelivery.bo.default') }}</th>
-                                                <th class="col-md-3">{{ 'Untaxed Price up to ... %symbol'|trans({'%symbol': currencySymbol}, 'chronoposthomedelivery.bo.default') }}</th>
-                                                <th class="col-md-5">{{ 'Price (%symbol)'|trans({'%symbol': currencySymbol}, 'chronoposthomedelivery.bo.default') }}</th>
-                                                <th class="col-md-1">{{ 'Actions'|trans({}, 'chronoposthomedelivery.bo.default') }}</th>
+                                                <th class="col-md-3">{{ 'Weight up to ... kg'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</th>
+                                                <th class="col-md-3">{{ 'Untaxed Price up to ... %symbol'|trans({'%symbol': currencySymbol}, 'chronoposthomedelivery.bo.default-twig') }}</th>
+                                                <th class="col-md-5">{{ 'Price (%symbol)'|trans({'%symbol': currencySymbol}, 'chronoposthomedelivery.bo.default-twig') }}</th>
+                                                <th class="col-md-1">{{ 'Actions'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -156,10 +156,10 @@
                                                     <th class="col-md-1">
                                                         <div class="btn-group">
                                                             {% if is_granted('UPDATE', {resource: 'admin.module', module: 'ChronopostHomeDelivery'}) %}
-                                                                <a class="btn btn-secondary btn-sm js-slice-save" title="{{ 'Save this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}"><i class="bi bi-save"></i></a>
+                                                                <a class="btn btn-secondary btn-sm js-slice-save" title="{{ 'Save this price slice'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}"><i class="bi bi-save"></i></a>
                                                             {% endif %}
                                                             {% if is_granted('DELETE', {resource: 'admin.module', module: 'ChronopostHomeDelivery'}) %}
-                                                                <a class="btn btn-secondary btn-sm js-slice-delete" title="{{ 'Delete this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}" data-id="{{ slice.slice_id }}"><i class="bi bi-trash"></i></a>
+                                                                <a class="btn btn-secondary btn-sm js-slice-delete" title="{{ 'Delete this price slice'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}" data-id="{{ slice.slice_id }}"><i class="bi bi-trash"></i></a>
                                                             {% endif %}
                                                         </div>
                                                     </th>
@@ -173,7 +173,7 @@
                                                     <th class="col-md-3"><input type="text" data-field="price-max" class="form-control js-slice-price-max" value=""></th>
                                                     <th class="col-md-5"><input type="text" data-field="price" class="form-control js-slice-price" value=""></th>
                                                     <th class="col-md-1">
-                                                        <a class="btn btn-secondary btn-sm js-slice-add" title="{{ 'Add this price slice'|trans({}, 'chronoposthomedelivery.bo.default') }}"><i class="bi bi-plus-lg"></i></a>
+                                                        <a class="btn btn-secondary btn-sm js-slice-add" title="{{ 'Add this price slice'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}"><i class="bi bi-plus-lg"></i></a>
                                                     </th>
                                                 </tr>
                                             {% endif %}
@@ -189,7 +189,7 @@
 
             {# ---- Tax rule tab ---- #}
             <div id="tax_rule" class="tab-pane {{ tab == 'tax_rule' ? 'active' }}">
-                <h2 class="h5 mt-3">{{ 'Chronopost Tax Rule configuration'|trans({}, 'chronoposthomedelivery.bo.default') }}</h2>
+                <h2 class="h5 mt-3">{{ 'Chronopost Tax Rule configuration'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</h2>
 
                 <form action="{{ path('chronopost_home_delivery_tax_rule_save') }}" method="post">
                     {{ form_widget(taxRuleForm._token) }}
@@ -198,7 +198,7 @@
                         {{ form_widget(taxRuleForm.tax_rule_id, {attr: {class: 'form-select'}}) }}
                         {{ form_errors(taxRuleForm.tax_rule_id) }}
                     </div>
-                    <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default') }}</button>
+                    <button class="btn btn-success" type="submit"><i class="bi bi-save"></i> {{ 'Save'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</button>
                 </form>
             </div>
         </div>
@@ -210,7 +210,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ 'Message'|trans({}, 'chronoposthomedelivery.bo.default') }}</h5>
+                <h5 class="modal-title">{{ 'Message'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body"></div>
