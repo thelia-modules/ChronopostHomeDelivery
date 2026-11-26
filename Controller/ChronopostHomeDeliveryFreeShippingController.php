@@ -3,6 +3,7 @@
 namespace ChronopostHomeDelivery\Controller;
 
 
+use ChronopostHomeDelivery\ChronopostHomeDelivery;
 use ChronopostHomeDelivery\Form\ChronopostHomeDeliveryFreeShippingForm;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryAreaFreeshipping;
 use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryAreaFreeshippingQuery;
@@ -10,9 +11,11 @@ use ChronopostHomeDelivery\Model\ChronopostHomeDeliveryDeliveryModeQuery;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Core\Translation\Translator;
 use Thelia\Model\AreaQuery;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -42,6 +45,12 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
             $deliveryModeId = $vform->get('delivery_mode')->getData();
 
             $deliveryMode = ChronopostHomeDeliveryDeliveryModeQuery::create()->findOneById($deliveryModeId);
+            if (null === $deliveryMode) {
+                throw new \InvalidArgumentException(
+                    Translator::getInstance()->trans('The delivery type is not valid', [], ChronopostHomeDelivery::DOMAIN_NAME)
+                );
+            }
+
             $deliveryMode
                 ->setFreeshippingActive($freeshipping)
                 ->save();
@@ -66,6 +75,11 @@ class ChronopostHomeDeliveryFreeShippingController extends BaseAdminController
 
         $data = $requestStack->getCurrentRequest()->request;
         $deliveryMode = ChronopostHomeDeliveryDeliveryModeQuery::create()->findOneById($data->get('delivery-mode'));
+        if (null === $deliveryMode) {
+            throw new NotFoundHttpException(
+                Translator::getInstance()->trans('The delivery type is not valid', [], ChronopostHomeDelivery::DOMAIN_NAME)
+            );
+        }
 
         $price = $data->get("price") === "" ? null : $data->get("price");
 

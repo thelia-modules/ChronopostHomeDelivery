@@ -1,7 +1,7 @@
 {# Advanced configuration tab — rendered inside ChronopostHomeDeliveryConfig.html.twig #}
 <form action="{{ path('ChronopostHomeDelivery_config_save') }}" method="post" class="mt-3">
     {{ form_widget(configForm._token) }}
-    <input type="hidden" name="success_url" value="/admin/module/ChronopostHomeDelivery">
+    {{ form_widget(configForm.success_url, {value: '/admin/module/ChronopostHomeDelivery'}) }}
 
     <h2 class="h5">{{ 'Chronopost informations'|trans({}, 'chronoposthomedelivery.bo.default-twig') }}</h2>
 

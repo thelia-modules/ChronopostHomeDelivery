@@ -38,9 +38,10 @@
                     {# Delivery mode title #}
                     <div class="row mb-3">
                         <form action="{{ path('ChronopostHomeDelivery_config_delivery_mode') }}" method="post">
-                            <input type="hidden" name="success_url" value="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_{{ mode.id }}">
-                            <input type="hidden" name="error_url" value="/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_{{ mode.id }}">
-                            <input type="hidden" name="delivery_mode_id" value="{{ mode.id }}">
+                            {% set modeTabUrl = '/admin/module/ChronopostHomeDelivery?current_tab=prices_slices_tab_' ~ mode.id %}
+                            {{ form_widget(mode.modeForm.success_url, {value: modeTabUrl}) }}
+                            {{ form_widget(mode.modeForm.error_url, {value: modeTabUrl}) }}
+                            {{ form_widget(mode.modeForm.delivery_mode_id) }}
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     {{ form_label(mode.modeForm.delivery_mode_title) }}
@@ -61,14 +62,13 @@
                         {# Free shipping switch #}
                         <div class="col-md-4">
                             <form action="{{ path('chronopost-home-delivery_freeshipping') }}" method="post" id="freeshippingform-{{ mode.id }}">
-                                <input type="hidden" name="delivery_mode" value="{{ mode.id }}">
+                                {{ form_widget(mode.freeshippingForm.delivery_mode, {type: 'hidden'}) }}
                                 {{ form_widget(mode.freeshippingForm._token) }}
                                 <label class="form-label d-block">
                                     {{ 'Activate total free shipping '|trans({}, 'chronoposthomedelivery.bo.default-twig') }}
                                 </label>
                                 <div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input freeshipping-activation-ChronopostHomeDelivery"
-                                           data-id="{{ mode.id }}" name="freeshipping" value="true" {{ mode.freeshipping_active ? 'checked' }}>
+                                    {{ form_widget(mode.freeshippingForm.freeshipping, {id: 'freeshipping-activation-' ~ mode.id, required: false, attr: {class: 'form-check-input freeshipping-activation-ChronopostHomeDelivery', 'data-id': mode.id}}) }}
                                 </div>
                             </form>
                         </div>

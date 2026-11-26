@@ -100,6 +100,12 @@ class ChronopostHomeDeliveryBackOfficeController extends BaseAdminController
             $data = $this->validateForm($form)->getData();
 
             $deliveryMode = ChronopostHomeDeliveryDeliveryModeQuery::create()->findPk($data['delivery_mode_id']);
+            if (null === $deliveryMode) {
+                throw new \InvalidArgumentException(
+                    Translator::getInstance()->trans('The delivery type is not valid', [], ChronopostHomeDelivery::DOMAIN_NAME)
+                );
+            }
+
             $lang = $request->hasSession() ? $request->getSession()->get('thelia.admin.edition.lang') : null;
             if ($lang === null) {
                 $lang = LangQuery::create()->filterByByDefault(1)->findOne();
